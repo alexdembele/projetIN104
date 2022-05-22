@@ -52,7 +52,7 @@ void Game::addPod(int nbPods,std::vector<sf::Vector2f> positionPods)
         setOriginToCenter(podsSprites_[i]);
         podsSprites_[i].setPosition(positionPods[i]);
         scaleToMinSize(podsSprites_[i],800,800);
-        printf("%f;%f\n",positionPods[i].x,positionPods[i].y);
+        //printf("%f;%f\n",positionPods[i].x,positionPods[i].y);
     }
     
 
@@ -149,7 +149,7 @@ void Game::updatePhysics()
                     pods_[i].nextCP_=-1;
                 }
                 if (pods_[i].nextCP_==0) {
-                pods_[i].lapCount_=pods_[i].lapCount_+1;
+                    pods_[i].lapCount_=pods_[i].lapCount_+1;
                 }
             }
             
@@ -164,18 +164,23 @@ void Game::updatePhysics()
                 sf::Vector2f podCheckpoint= pods_[i].pos_ - finalCP_.getPosition();
                 dist=sqrt(podCheckpoint.x*podCheckpoint.x+podCheckpoint.x*podCheckpoint.x);
             }
-            
+
             if (dist < 300) {
                 if (pods_[i].nextCP_<3) {
+                    otherCPs_[pods_[i].nextCP_].fillingText_.setFillColor(sf::Color::Green);
                     pods_[i].nextCP_=pods_[i].nextCP_+1;
                 } else if (pods_[i].nextCP_==3) {
+                    otherCPs_[pods_[i].nextCP_].fillingText_.setFillColor(sf::Color::Green);
                     pods_[i].nextCP_=-1;
                 }
                 if (pods_[i].nextCP_==0) {
-                pods_[i].lapCount_=pods_[i].lapCount_+1;
+                    for (int j=0;j<4;++j) {
+                        otherCPs_[j].fillingText_.setFillColor(sf::Color::White);
+                    }
+                    pods_[i].lapCount_=pods_[i].lapCount_+1;
                 }
             }
-            printf("%d\n",pods_[i].nextCP_);
+            //printf("%d\n",pods_[i].nextCP_);
         }
 
 

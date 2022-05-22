@@ -10,6 +10,7 @@
 #include "../inc/pod.h"
 #include "SFML/Graphics/Sprite.hpp"
 #include "SFML/Graphics/Texture.hpp"
+#include "SFML/System/Vector2.hpp"
 
 int main()
 {
@@ -56,6 +57,15 @@ int main()
     text.setFillColor(sf::Color::Black);
 
 
+    //affichage bonus
+    sf::Sprite sp_champi;
+    sf::Texture tex_champi;
+    tex_champi.loadFromFile("../repository/Images/champignon.png");
+    sp_champi.setTexture(tex_champi);
+    setOriginToCenter(sp_champi);
+    sp_champi.setPosition(sf::Vector2f(15500.f,500.f));
+    scaleToMinSize(sp_champi,800,800);
+
 
     while (window.isOpen())
     {
@@ -99,12 +109,21 @@ int main()
                     }
                 }
                 text.setString(score);
+
+                
+
             }
             
             //met à jour les sprites au temps actuel
             myGame.updateGraphics(frameTime);
             window.draw(myGame);
             window.draw(text);
+
+            //bonus actif
+            if (myGame.pods_[0].champignon_>=0 && myGame.pods_[0].champignon_<=100 ) {
+                window.draw(sp_champi);
+            }
+
             window.display();
         }
     }

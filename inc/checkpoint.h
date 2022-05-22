@@ -12,7 +12,7 @@ class CheckPoint : public sf::Drawable
     CheckPoint(sf::Vector2f center, unsigned int id); //creates a Checkpoint from a position and its number
     sf::Vector2f getPosition(); //returns Checkpoint's position
 
-    private:
+    //private:
     void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
     sf::CircleShape circle_;
