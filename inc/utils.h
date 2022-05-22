@@ -17,5 +17,6 @@ void setTextCenterPosition(sf::Text &txt, sf::Vector2f center);
 
 bool check(float x, float y, float *listex, float *listey, int size);
 std::vector<sf::Vector2f> randomCP(int nbCP);
+float angle(sf::Vector2f a, sf::Vector2f b);
 
 #endif
