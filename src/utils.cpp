@@ -101,11 +101,11 @@ float angle(sf::Vector2f a, sf::Vector2f b)
   
     if (prodVectoriel>=0)
     {
-        return acosf(dot/(norma*normb));
+        return (180/M_PI)*acosf(dot/(norma*normb));
     }
     else
     {
-        return -acosf(dot/(norma*normb));
+        return -(180/M_PI)*acosf(dot/(norma*normb));
     }
 
 

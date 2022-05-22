@@ -7,13 +7,16 @@
 #include <vector>
 #include <string>
 #include "../inc/utils.h"
+#include "../inc/pod.h"
+#include "SFML/Graphics/Sprite.hpp"
+#include "SFML/Graphics/Texture.hpp"
 
 int main()
 {
     sf::ContextSettings settings;
     settings.antialiasingLevel = 32;
 
-    sf::RenderWindow window(sf::VideoMode(1600, 900), "SFML works!", sf::Style::Default, settings);
+    sf::RenderWindow window(sf::VideoMode(1600, 900), "Le meilleur jeu!", sf::Style::Default, settings);
     window.setView(sf::View(sf::Rect(0.f,0.f,16000.f,9000.f)));
     window.setVerticalSyncEnabled(false);
 
@@ -47,6 +50,25 @@ int main()
     //Vous pouvez aussi initialiser myGame avec une liste de checkpoints prédéfinie
     Game myGame(checkpointsPositions);
     myGame.addPod();
+
+    /*
+    //test
+    sf::Vector2f pos(5000.f, 5000.f);
+    sf::Vector2f vel(0.f, 0.f);
+    Pod podtest(pos,270.f,vel);
+    sf::Texture textest;
+    textest.loadFromFile("../repository/Images/SWMilleniumFalcon.png");
+    sf::Sprite sptest;
+    sptest.setTexture(textest);
+    setOriginToCenter(sptest);
+    sptest.setPosition(5000.f, 5000.f);
+    scaleToMinSize(sptest,800,800);
+    sptest.setPosition(podtest.pos_);
+    sptest.setRotation(podtest.angle_);
+    float rot = sptest.getRotation();
+    printf("%f",rot);
+    */
+
 
     while (window.isOpen())
     {
@@ -84,6 +106,7 @@ int main()
             //met à jour les sprites au temps actuel
             myGame.updateGraphics(frameTime);
             window.draw(myGame);
+            //window.draw(sptest);
             window.display();
         }
     }

@@ -40,7 +40,8 @@ class Game : public sf::Drawable
     std::vector<CheckPoint> otherCPs_;
 
     sf::Time lastFrameTime;
-    sf::Time physicsTime;   
+    sf::Time physicsTime;
+    
 };
 
 #endif

@@ -1,6 +1,8 @@
 #include "../inc/game.h"
 #include "../inc/checkpoint.h"
 #include "../inc/utils.h"
+#include "SFML/System/Vector2.hpp"
+#include "pod.h"
 #include <SFML/Graphics/CircleShape.hpp>
 #include <iostream>
 
@@ -43,33 +45,88 @@ void Game::addPod()
     podsTextures_[0].loadFromFile("../repository/Images/SWMilleniumFalcon.png");
     podsSprites_[0].setTexture(podsTextures_[0]);
     setOriginToCenter(podsSprites_[0]);
-    podsSprites_[0].setPosition(8000.f, 4500.f);
-    scaleToMinSize( podsSprites_[0],800,800);
+    podsSprites_[0].setPosition(8000.f, 8000.f);
+    scaleToMinSize(podsSprites_[0],800,800);
 }
 
 void Game::updatePhysics()
 {  
     int nbPod=pods_.size();
     for(int i=0;i<nbPod;i++)
-    {
-       //test angle limite
-       sf::Vector2f target;
-       float decalageAngle =-180/M_PI*angle(pods_[i].getDecision(pods_[i],otherCPs_,finalCP_).target_-pods_[i].pos_,sf::Vector2f (0.001,0))-pods_[i].angle_;
-       printf("decalage:%f\n",decalageAngle);
-       if(abs(decalageAngle>18))
-       {
-           float Nx= cos(decalageAngle/180*M_PI)*(pods_[i].getDecision(pods_[i],otherCPs_,finalCP_).target_-pods_[i].pos_).x +sin(decalageAngle/180*M_PI)*(pods_[i].getDecision(pods_[i],otherCPs_,finalCP_).target_-pods_[i].pos_).y ; 
-           float Ny=-sin(decalageAngle/180*M_PI)*(pods_[i].getDecision(pods_[i],otherCPs_,finalCP_).target_-pods_[i].pos_).x +cos(decalageAngle/180*M_PI)*(pods_[i].getDecision(pods_[i],otherCPs_,finalCP_).target_-pods_[i].pos_).y;
-           target=pods_[i].pos_ +sf::Vector2f (Nx,Ny);
+    {   
+        //printf("decalage:%f\n",decalageAngle);
+        sf::Vector2f pod_target = pods_[i].getDecision(pods_[i],otherCPs_,finalCP_).target_;
+        sf::Vector2f pod_pos = pods_[i].pos_;
+        sf::Vector2f vecteur_vers_target = pod_target-pod_pos;
+        //sf::Vector2f vecteur_vers_direction = pods_[i].vel_;
+        float decalageAngle = angle(sf::Vector2f(0.00000001f,0.f),vecteur_vers_target)-pods_[i].angle_;
+
+        //si le decalageAngle est superieur a pi/10 on fait un decalage de pi/10
+        if(abs(decalageAngle)>18.f)
+        {   
+            
+            //calcul du vecteur vers le target intermediaire
+            //vecteur vers la target intermediaire dans le repere du pod
+            float decalage_intermediaire;
+            //on check si le decalage est vers le haut ou le bas
+            if (decalageAngle>0) {
+                decalage_intermediaire=(-decalageAngle+18)*(M_PI/180.f);
+            } else if (decalageAngle<=0) {
+                decalage_intermediaire=(-decalageAngle-18)*(M_PI/180.f);
+            }
+            
+            float Nx=cos(decalage_intermediaire)*vecteur_vers_target.x -sin(decalage_intermediaire)*vecteur_vers_target.y; 
+            float Ny=sin(decalage_intermediaire)*vecteur_vers_target.x+cos(decalageAngle)*vecteur_vers_target.y;
+            
+            sf::Vector2f target_intermediaire;
+            target_intermediaire=sf::Vector2f (Nx,Ny);
+            
+            float norme_vintermediaire= sqrt(target_intermediaire.x*target_intermediaire.x+target_intermediaire.y*target_intermediaire.y);
+            
+            //calcul vitesse
+            pods_[i].vel_=0.85f*(pods_[i].vel_+pods_[i].getDecision(pods_[i],otherCPs_,finalCP_).power_*(target_intermediaire/norme_vintermediaire));
+            
+            //calcul position
+            pods_[i].pos_=pods_[i].pos_+pods_[i].vel_;
+
+            //calcul angle
+            if (decalageAngle>0) {
+                pods_[i].angle_=pods_[i].angle_+18.f;
+            } else if (decalageAngle<=0) {
+                pods_[i].angle_=pods_[i].angle_-18.f;
+            }
+
+            //test si sur checkpoint et si lapcount
+            printf("%d\n",pods_[i].nextCP_);
+            if (norme_vintermediaire < 300.f) {
+                if (pods_[i].nextCP_<3) {
+                    pods_[i].nextCP_=pods_[i].nextCP_+1;
+                } else if (pods_[i].nextCP_==3) {
+                    pods_[i].nextCP_=-1;
+                }
+                if (pods_[i].nextCP_==0) {
+                pods_[i].lapCount_=pods_[i].lapCount_+1;
+                }
+            }
+            printf("%f   %f\n",Nx,Ny);
+            //printf("%f   %f    %f\n",decalage_intermediaire, decalageAngle,pods_[i].angle_);
+            //printf("%f;%f    %f;%f\n",pod_pos.x,pod_pos.y,target_intermediaire.x+pod_pos.x,target_intermediaire.y+pod_pos.y);
+
+        } else {
           
-          
-           sf::Vector2f nor =target-pods_[i].pos_;
-           float norme= sqrt(nor.x*nor.x+nor.y*nor.y);
-           //vitesse  .
-           pods_[i].vel_=0.85f*(pods_[i].vel_+pods_[i].getDecision(pods_[i],otherCPs_,finalCP_).power_*(target-pods_[i].pos_)/norme);
-           pods_[i].pos_=pods_[i].pos_+pods_[i].vel_;
-           pods_[i].angle_=-180/M_PI*angle(target-pods_[i].pos_,sf::Vector2f (0.001,0));
-           printf("%d\n",pods_[i].lapCount_);
+            float norme = sqrt(vecteur_vers_target.x*vecteur_vers_target.x+vecteur_vers_target.y*vecteur_vers_target.y);
+            
+            //calcul vitesse
+            pods_[i].vel_=0.85f*(pods_[i].vel_+pods_[i].getDecision(pods_[i],otherCPs_,finalCP_).power_*(vecteur_vers_target/norme));
+            
+            //calcul position
+            pods_[i].pos_=pods_[i].pos_+pods_[i].vel_;
+
+            //calcul angle
+            pods_[i].angle_=pods_[i].angle_+decalageAngle;
+
+            
+            //test si sur checkpoint et si lapcount
             if (norme < 300) {
                 if (pods_[i].nextCP_<3) {
                     pods_[i].nextCP_=pods_[i].nextCP_+1;
@@ -80,138 +137,15 @@ void Game::updatePhysics()
                 pods_[i].lapCount_=pods_[i].lapCount_+1;
                 }
             }
-       }
-     
-       else
-       {
-          
-           //
-           sf::Vector2f nor =pods_[i].getDecision(pods_[i],otherCPs_,finalCP_).target_-pods_[i].pos_;
-           float norme= sqrt(nor.x*nor.x+nor.y*nor.y);
-           //vitesse  .
-           pods_[i].vel_=0.85f*(pods_[i].vel_+pods_[i].getDecision(pods_[i],otherCPs_,finalCP_).power_*(pods_[i].getDecision(pods_[i],otherCPs_,finalCP_).target_-pods_[i].pos_)/norme);
-           //position
-           pods_[i].pos_=pods_[i].pos_+pods_[i].vel_;
- 
-           //angle...angle max dans get decision
-           pods_[i].angle_=-180/M_PI*angle(pods_[i].getDecision(pods_[i],otherCPs_,finalCP_).target_-pods_[i].pos_,sf::Vector2f (0.001,0));
-           /*if (pods_[i].getDecision(pods_[i]).target_.x-pods_[i].pos_.x >0)
-           {
-               pods_[i].angle_= (180/M_PI*atan((pods_[i].getDecision(pods_[i]).target_.y-pods_[i].pos_.y)/(pods_[i].getDecision(pods_[i]).target_.x-pods_[i].pos_.x)));
-           }
-           else
-           {
-             pods_[i].angle_= (180-180/M_PI*atan((pods_[i].getDecision(pods_[i]).target_.y-pods_[i].pos_.y)/(pods_[i].getDecision(pods_[i]).target_.x-pods_[i].pos_.x)));
-            }*/
-            printf("%d\n",pods_[i].lapCount_);
-            if (norme < 300) {
-                if (pods_[i].nextCP_<3) {
-                    pods_[i].nextCP_=pods_[i].nextCP_+1;
-                } else if (pods_[i].nextCP_==3) {
-                    pods_[i].nextCP_=-1;
-                }
-                if (pods_[i].nextCP_==0) {
-                pods_[i].lapCount_=pods_[i].lapCount_+1;
-                }
-            }
-          
-       }
-       printf("physics:%f\n",pods_[i].angle_);
-       
- 
-      
-   }
-   physicsTime += PHYSICS_TIME_STEP;
+            
+        }
 
-   /*  
-   int nbPod=pods_.size();
-   for(int i=0;i<nbPod;i++)
-   {
+        printf("%f;%f    %f;%f\n",pod_pos.x,pod_pos.y,pod_target.x+pod_pos.x,pod_target.y+pod_pos.y);
 
-       
- 
-       //on calcule les nouveaux vecteurs position et vitesse
-       //pour cela on calcule le vecteur entre le pod et sa target
-       sf::Vector2f nor =pods_[i].getDecision(pods_[i],otherCPs_,finalCP_).target_-pods_[i].pos_;
-       float norme= sqrt(nor.x*nor.x+nor.y*nor.y);
-
-       //vitesse
-       pods_[i].vel_=0.85f*(pods_[i].vel_+pods_[i].getDecision(pods_[i],otherCPs_,finalCP_).power_*(pods_[i].getDecision(pods_[i],otherCPs_,finalCP_).target_-pods_[i].pos_)/norme);
-       //position
-       pods_[i].pos_=pods_[i].pos_+pods_[i].vel_;
- 
-       //angle...angle max dans get decision
-    
-       if (pods_[i].getDecision(pods_[i],otherCPs_,finalCP_).target_.x-pods_[i].pos_.x >0)
-       {
-           pods_[i].angle_= (180/M_PI*atan((pods_[i].getDecision(pods_[i],otherCPs_,finalCP_).target_.y-pods_[i].pos_.y)/(pods_[i].getDecision(pods_[i],otherCPs_,finalCP_).target_.x-pods_[i].pos_.x)));
-       }
-       else
-       {
-          pods_[i].angle_= (180-180/M_PI*atan((pods_[i].getDecision(pods_[i],otherCPs_,finalCP_).target_.y-pods_[i].pos_.y)/(pods_[i].getDecision(pods_[i],otherCPs_,finalCP_).target_.x-pods_[i].pos_.x)));
-       }
-       //printf("%f\n",pods_[i].angle_);
-       printf("%d\n",pods_[i].lapCount_);
-       if (norme < 300) {
-           if (pods_[i].nextCP_<3) {
-               pods_[i].nextCP_=pods_[i].nextCP_+1;
-           } else if (pods_[i].nextCP_==3) {
-               pods_[i].nextCP_=-1;
-           }
-           if (pods_[i].nextCP_==0) {
-           pods_[i].lapCount_=pods_[i].lapCount_+1;
-       }
-       }
-
-       
-       
-
- 
-      
- 
-      
-   }
-   physicsTime += PHYSICS_TIME_STEP;
-
-   */
-    /*
-    int nbPod=pods_.size();
-    for(int i=0;i<nbPod;i++)
-    {
-        sf::Vector2f nor =pods_[i].getDecision(pods_[i]).target_-pods_[i].pos_;
-        float norme= sqrt(nor.x*nor.x+nor.y*nor.y);
-        //vitesse
-        pods_[i].vel_=0.85f*(pods_[i].vel_+pods_[i].getDecision(pods_[i]).power_*(pods_[i].getDecision(pods_[i]).target_-pods_[i].pos_)/norme);
-        //position
-        pods_[i].pos_=pods_[i].pos_+pods_[i].vel_;
-
-
-        float ax = pods_[i].getDecision(pods_[i]).target_.x;
-        float ay = pods_[i].getDecision(pods_[i]).target_.y;
-        float norma = sqrt(ax*ax + ay*ay);
-
-        float tx = cos((2*M_PI*pods_[i].angle_)/360);
-        float ty = sin((2*M_PI*pods_[i].angle_)/360);
-        float normt = sqrt(tx*tx + ty*ty);
-
-        float ps = ax*tx + ay*ty;
-        
-        float angle = acos(ps/(norma*normt));
-        
-        if 
-        if () 
-
-
-        //angle......angle max dans get decision
-        pods_[i].angle_=180/M_PI*atan((pods_[i].getDecision(pods_[i]).target_.y-pods_[i].pos_.y)/(pods_[i].getDecision(pods_[i]).target_.x-pods_[i].pos_.x));
-
-
-        
-
-        
+        //printf("physics:%f\n",pods_[i].angle_);
     }
+    
     physicsTime += PHYSICS_TIME_STEP;
-    */
 }
 
 

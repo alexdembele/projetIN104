@@ -22,7 +22,7 @@ class Pod
 
     Decision getDecision(Pod pod, std::vector<CheckPoint> otherCPs_,FinalCheckPoint finalCP_) const; 
 
-    private :
+    //private :
     sf::Vector2f pos_, vel_; //position and velocity vectors
     float angle_; //angle in radians
     int nextCP_, lapCount_;

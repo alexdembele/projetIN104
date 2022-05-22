@@ -2,6 +2,8 @@
 #include "../inc/game.h"
 #include <SFML/System/Vector2.hpp>
 
+
+
 Decision::Decision(sf::Vector2f target, float power) 
 {
     target_=target;
@@ -19,77 +21,21 @@ Pod::Pod(sf::Vector2f pos, float angle, sf::Vector2f vel)
 
 Decision Pod::getDecision(Pod pod, std::vector<CheckPoint> otherCPs_, FinalCheckPoint finalCP_) const
 {   
-    //on sauvegarde la position du next checkpoint pour ce pod
-    int nextCP=pod.nextCP_;
-    float power=20;   
-    if (nextCP!=-1) {
-
-        //on va chercher la position du checkpoint pour ce pod
-        sf::Vector2f position_nextCP=otherCPs_[nextCP].getPosition();
-
-        //on retourne la decision
-        return Decision(position_nextCP,power);
-    } else if (nextCP==-1) {
-        sf::Vector2f position_nextCP=finalCP_.getPosition();
-        return Decision(position_nextCP,power);
-    }
-
-    /*
-    //clavier
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-    {
-        // left key is pressed: move our character
-            
-        printf("gauche");
-        if (abs(pod.angle_+ 90)>18)
-        {
-            sf::Vector2f target= pod.pos_+1000.f*sf::Vector2f(cos(M_PI/10),sin(M_PI/10));
-            return Decision({16000, 4500}, 10);
-        }
-            
-    }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
-    {
-        // left key is pressed: move our character
-            
-        printf("haut"); 
-            
-    }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
-    {
-        // left key is pressed: move our character
-            
-        printf("bas"); 
-            
-    }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-    {
-        // left key is pressed: move our character
-            
-        printf("doite"); 
-            
-    }
+    float power=100.f;
 
     //IA
+    if(sf::Keyboard::isKeyPressed(sf::Keyboard::I))
+    {
+        power*=2;
+    }
 
-    //defaut
-    return Decision({16000, 4500}, 10);
-    */
-
-    
-};
-
-/*Decision Pod::getDecision(Pod pod) const
-{
-    int power=50;
     //champignon
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::E))
     {
         power*=2;
     }
-    //clavier
 
-    
+    //clavier
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
     {
         // left key is pressed: move our character
@@ -133,11 +79,26 @@ Decision Pod::getDecision(Pod pod, std::vector<CheckPoint> otherCPs_, FinalCheck
             
     }
 
-    
 
-    //IA
+    //IA NORMALE
+    //on sauvegarde la position du next checkpoint pour ce pod
+    int nextCP=pod.nextCP_; 
+    if (nextCP!=-1) {
 
-    //defaut
-    return Decision({8000, 4500}, power);
+        //on va chercher la position du checkpoint pour ce pod
+        sf::Vector2f position_nextCP=otherCPs_[nextCP].getPosition();
+
+        //on retourne la decision
+        return Decision(position_nextCP,power);
+    } else {
+        sf::Vector2f position_nextCP=finalCP_.getPosition();
+        return Decision(position_nextCP,power);
+    }
     
-};*/
+    /*
+    } else if (nextCP==-1) {
+        sf::Vector2f position_nextCP=finalCP_.getPosition();
+        return Decision(position_nextCP,power);
+    }
+    */
+};
