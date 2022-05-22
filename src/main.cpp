@@ -3,11 +3,10 @@
 #include <SFML/Window.hpp>
 #include <iostream>
 #include <cmath>
-#include "game.h"
+#include "../inc/game.h"
 #include <vector>
 #include <string>
-
-#include "utils.h"
+#include "../inc/utils.h"
 
 int main()
 {
