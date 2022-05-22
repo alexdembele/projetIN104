@@ -6,7 +6,7 @@
 #include "game.h"
 #include <vector>
 #include <string>
-#include "util.h"
+
 #include "utils.h"
 
 int main()

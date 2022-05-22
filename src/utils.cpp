@@ -91,3 +91,22 @@ std::vector<sf::Vector2f> randomCP(int nbCP) {
     }
     return checkpointsPositions;
 }
+
+float angle(sf::Vector2f a, sf::Vector2f b)
+{
+    float dot=a.x * b.x + a.y *b.y;
+    float norma=sqrt(a.x*a.x+a.y*a.y);
+    float normb=sqrt(b.x*b.x+b.y*b.y);
+    float prodVectoriel=(a.x*b.y-a.y*b.x);
+  
+    if (prodVectoriel>=0)
+    {
+        return acosf(dot/(norma*normb));
+    }
+    else
+    {
+        return -acosf(dot/(norma*normb));
+    }
+
+
+}
