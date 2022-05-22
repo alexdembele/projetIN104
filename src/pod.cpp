@@ -40,8 +40,46 @@ Decision Pod::getDecision(Pod &pod, std::vector<CheckPoint> otherCPs_, FinalChec
             pod.champignon_+=1;
         }
 
-        //printf("%d\n",pod.champignon_);
+        
         //clavier
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)&&sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+        {
+            // left key is pressed: move our character
+            sf::Vector2f target=pod.pos_-1000.f*sf::Vector2f(0,1);
+            return Decision(target, 0);
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)&&sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+        {
+            // left key is pressed: move our character
+            sf::Vector2f target=pod.pos_-1000.f*sf::Vector2f(0,1);
+            return Decision(target, 0);
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)&&sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+        {
+            // left key is pressed: move our character
+            sf::Vector2f target=pod.pos_+1000.f*sf::Vector2f(-1,1);
+            return Decision(target, 0);
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)&&sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+        {
+            // left key is pressed: move our character
+            sf::Vector2f target=pod.pos_+1000.f*sf::Vector2f(-1,-1);
+            return Decision(target, 0);
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)&&sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+        {
+            // left key is pressed: move our character
+            sf::Vector2f target=pod.pos_+1000.f*sf::Vector2f(1,1);
+            return Decision(target, 0);
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)&&sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+        {
+            // left key is pressed: move our character
+            sf::Vector2f target=pod.pos_+1000.f*sf::Vector2f(1,-1);
+            return Decision(target, 0);
+        }
+
+
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
         {
             // left key is pressed: move our character
