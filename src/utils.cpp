@@ -1,4 +1,4 @@
-#include "utils.h"
+#include "../inc/utils.h"
 #include <cmath>
 #include <stdlib.h>
 #include <time.h>

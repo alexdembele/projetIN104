@@ -1,6 +1,6 @@
-#include "game.h"
-#include "checkpoint.h"
-#include "utils.h"
+#include "../inc/game.h"
+#include "../inc/checkpoint.h"
+#include "../inc/utils.h"
 #include <SFML/Graphics/CircleShape.hpp>
 #include <iostream>
 

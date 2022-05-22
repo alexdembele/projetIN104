@@ -1,5 +1,5 @@
-#include "pod.h"
-#include "game.h"
+#include "../inc/pod.h"
+#include "../inc/game.h"
 #include <SFML/System/Vector2.hpp>
 
 Decision::Decision(sf::Vector2f target, float power) 
