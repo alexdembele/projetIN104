@@ -18,21 +18,28 @@ Pod::Pod(sf::Vector2f pos, float angle, sf::Vector2f vel)
     nextCP_=0;
     lapCount_=0;
     IA_=true;
+    champignon_=-1;
 };
 
 
 
 
-Decision Pod::getDecision(Pod pod, std::vector<CheckPoint> otherCPs_, FinalCheckPoint finalCP_) const
+Decision Pod::getDecision(Pod &pod, std::vector<CheckPoint> otherCPs_, FinalCheckPoint finalCP_) const
 {   
     float power=30.f;
 
     if (pod.IA_==false) {
         //champignon
-        if(sf::Keyboard::isKeyPressed(sf::Keyboard::E))
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::E) && pod.champignon_<0)
+        {
+            pod.champignon_+=1;
+        }
+        if(pod.champignon_>=0 && pod.champignon_<=100)
         {
             power*=2;
+            pod.champignon_+=1;
         }
+        printf("%d\n",pod.champignon_);
         //clavier
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
         {
@@ -91,7 +98,7 @@ Decision Pod::getDecision(Pod pod, std::vector<CheckPoint> otherCPs_, FinalCheck
             return Decision(position_nextCP,power);
         }
     }
-
+    
     //default
     //return Decision(sf::Vector2f(1000.f,1000.f),power);
 };

@@ -64,7 +64,8 @@ void Game::updatePhysics()
     for(int i=0;i<nbPod;i++)
     {   
         //printf("decalage:%f\n",decalageAngle);
-        sf::Vector2f pod_target = pods_[i].getDecision(pods_[i],otherCPs_,finalCP_).target_;
+        Decision decision=pods_[i].getDecision(pods_[i],otherCPs_,finalCP_);
+        sf::Vector2f pod_target = decision.target_;
         sf::Vector2f pod_pos = pods_[i].pos_;
         sf::Vector2f vecteur_vers_target = pod_target-pod_pos;
         //sf::Vector2f vecteur_vers_direction = pods_[i].vel_;
@@ -97,7 +98,7 @@ void Game::updatePhysics()
             float norme_vintermediaire= sqrt(target_intermediaire.x*target_intermediaire.x+target_intermediaire.y*target_intermediaire.y);
             
             //calcul vitesse
-            pods_[i].vel_=0.85f*(pods_[i].vel_+pods_[i].getDecision(pods_[i],otherCPs_,finalCP_).power_*(target_intermediaire/norme_vintermediaire));
+            pods_[i].vel_=0.85f*(pods_[i].vel_+decision.power_*(target_intermediaire/norme_vintermediaire));
             
             //calcul position
             pods_[i].pos_=pods_[i].pos_+pods_[i].vel_;
@@ -130,7 +131,7 @@ void Game::updatePhysics()
             float norme = sqrt(vecteur_vers_target.x*vecteur_vers_target.x+vecteur_vers_target.y*vecteur_vers_target.y);
             
             //calcul vitesse
-            pods_[i].vel_=0.85f*(pods_[i].vel_+pods_[i].getDecision(pods_[i],otherCPs_,finalCP_).power_*(vecteur_vers_target/norme));
+            pods_[i].vel_=0.85f*(pods_[i].vel_+decision.power_*(vecteur_vers_target/norme));
             
             //calcul position
             pods_[i].pos_=pods_[i].pos_+pods_[i].vel_;
