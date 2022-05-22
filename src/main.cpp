@@ -6,12 +6,7 @@
 #include "../inc/game.h"
 #include <vector>
 #include <string>
-<<<<<<< HEAD
 #include "../inc/utils.h"
-=======
-
-#include "utils.h"
->>>>>>> ee018a65d9f013d470c9556b0edc985d504bbf5b
 
 int main()
 {
