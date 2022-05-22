@@ -13,6 +13,7 @@ struct Decision
 
     sf::Vector2f target_;
     float power_;
+    bool IA_;
 };
 
 class Pod
@@ -26,6 +27,7 @@ class Pod
     sf::Vector2f pos_, vel_; //position and velocity vectors
     float angle_; //angle in radians
     int nextCP_, lapCount_;
+    bool IA_;
     
     friend class Game; //allows game to modify pod's private attributes
 };

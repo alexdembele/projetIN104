@@ -36,38 +36,12 @@ int main()
 
     //Checkpoints
     unsigned int nbCP = 5;
-    /*
-    std::vector<sf::Vector2f> checkpointsPositions;
-    sf::Vector2f vfinal(5000.f, 5000.f);
-    checkpointsPositions.emplace_back(vfinal);
-    for (unsigned int i=1; i<nbCP; i++) {
-        sf::Vector2f v(1000.f*i, 1000.f*i);
-        checkpointsPositions.emplace_back(v);
-    }
-    */
     std::vector<sf::Vector2f> checkpointsPositions = randomCP( nbCP);
-
     //Vous pouvez aussi initialiser myGame avec une liste de checkpoints prédéfinie
     Game myGame(checkpointsPositions);
-    myGame.addPod();
+    myGame.addPod(2);
+    myGame.pods_[1].IA_=false;
 
-    /*
-    //test
-    sf::Vector2f pos(5000.f, 5000.f);
-    sf::Vector2f vel(0.f, 0.f);
-    Pod podtest(pos,270.f,vel);
-    sf::Texture textest;
-    textest.loadFromFile("../repository/Images/SWMilleniumFalcon.png");
-    sf::Sprite sptest;
-    sptest.setTexture(textest);
-    setOriginToCenter(sptest);
-    sptest.setPosition(5000.f, 5000.f);
-    scaleToMinSize(sptest,800,800);
-    sptest.setPosition(podtest.pos_);
-    sptest.setRotation(podtest.angle_);
-    float rot = sptest.getRotation();
-    printf("%f",rot);
-    */
 
 
     while (window.isOpen())
@@ -106,7 +80,6 @@ int main()
             //met à jour les sprites au temps actuel
             myGame.updateGraphics(frameTime);
             window.draw(myGame);
-            //window.draw(sptest);
             window.display();
         }
     }

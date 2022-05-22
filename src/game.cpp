@@ -24,29 +24,38 @@ Game::Game(std::vector<sf::Vector2f> checkpointsPositions) : finalCP_(checkpoint
     backgroundTexture_.loadFromFile("../repository/Images/background.png");
     backgroundSprite_.setTexture(backgroundTexture_);
     scaleToMinSize(backgroundSprite_,16000,9000);
+
+    IA=false;
     
 }
 
-void Game::addPod()
+void Game::addPod(int nbPods)
 {   
     //on reserve l'emplacement pour les pods, textures et sprite
-    pods_.reserve(1);
-    podsTextures_.reserve(1);
-    podsTextures_.emplace_back();
-    podsSprites_.reserve(1);
-    podsSprites_.emplace_back();
-    
-    //on cree le pod
-    sf::Vector2f pos(8000.f, 8000.f);
-    sf::Vector2f vel(100.f, 100.f);
-    pods_.emplace_back(pos,0.f,vel);
+    pods_.reserve(nbPods);
+    podsTextures_.reserve(nbPods);
+    podsSprites_.reserve(nbPods);
+    for (int i=0; i<nbPods;++i) {
+        podsTextures_.emplace_back();
+        podsSprites_.emplace_back();
+        
+        //on cree le pod
+        sf::Vector2f pos(8000.f, 8000.f);
+        sf::Vector2f vel(100.f, 100.f);
+        pods_.emplace_back(pos,0.f,vel);
 
-    //on lui donne une texture + on l'applique au sprite + on le scale + on setorigin
-    podsTextures_[0].loadFromFile("../repository/Images/SWMilleniumFalcon.png");
-    podsSprites_[0].setTexture(podsTextures_[0]);
-    setOriginToCenter(podsSprites_[0]);
-    podsSprites_[0].setPosition(8000.f, 8000.f);
-    scaleToMinSize(podsSprites_[0],800,800);
+        //on lui donne une texture + on l'applique au sprite + on le scale + on setorigin
+        if (i==0) {
+            podsTextures_[0].loadFromFile("../repository/Images/SWMilleniumFalcon.png");
+        } else {
+            podsTextures_[1].loadFromFile("../repository/Images/NMSFighterG.png");
+        }
+        podsSprites_[i].setTexture(podsTextures_[i]);
+        setOriginToCenter(podsSprites_[i]);
+        podsSprites_[i].setPosition(8000.f, 8000.f);
+        scaleToMinSize(podsSprites_[i],800,800);
+    }
+    
 }
 
 void Game::updatePhysics()
@@ -61,13 +70,17 @@ void Game::updatePhysics()
         //sf::Vector2f vecteur_vers_direction = pods_[i].vel_;
         float decalageAngle = angle(sf::Vector2f(0.00000001f,0.f),vecteur_vers_target)-pods_[i].angle_;
 
+        if (decalageAngle>180) {
+            decalageAngle-=360;
+        }
+
         //si le decalageAngle est superieur a pi/10 on fait un decalage de pi/10
         if(abs(decalageAngle)>18.f)
         {   
             
             //calcul du vecteur vers le target intermediaire
             //vecteur vers la target intermediaire dans le repere du pod
-            float decalage_intermediaire;
+            float decalage_intermediaire=0.f;
             //on check si le decalage est vers le haut ou le bas
             if (decalageAngle>0) {
                 decalage_intermediaire=(-decalageAngle+18)*(M_PI/180.f);
@@ -97,7 +110,7 @@ void Game::updatePhysics()
             }
 
             //test si sur checkpoint et si lapcount
-            printf("%d\n",pods_[i].nextCP_);
+            //printf("%d\n",pods_[i].nextCP_);
             if (norme_vintermediaire < 300.f) {
                 if (pods_[i].nextCP_<3) {
                     pods_[i].nextCP_=pods_[i].nextCP_+1;
@@ -108,7 +121,7 @@ void Game::updatePhysics()
                 pods_[i].lapCount_=pods_[i].lapCount_+1;
                 }
             }
-            printf("%f   %f\n",Nx,Ny);
+            //printf("%f   %f\n",Nx,Ny);
             //printf("%f   %f    %f\n",decalage_intermediaire, decalageAngle,pods_[i].angle_);
             //printf("%f;%f    %f;%f\n",pod_pos.x,pod_pos.y,target_intermediaire.x+pod_pos.x,target_intermediaire.y+pod_pos.y);
 
@@ -140,11 +153,13 @@ void Game::updatePhysics()
             
         }
 
-        printf("%f;%f    %f;%f\n",pod_pos.x,pod_pos.y,pod_target.x+pod_pos.x,pod_target.y+pod_pos.y);
 
+        //printf("%f;%f    %f;%f\n",pod_pos.x,pod_pos.y,pod_target.x+pod_pos.x,pod_target.y+pod_pos.y);
         //printf("physics:%f\n",pods_[i].angle_);
     }
+    //printf("%f;%f\n",pods_[0].pos_.x,pods_[0].pos_.y);
     
+
     physicsTime += PHYSICS_TIME_STEP;
 }
 
