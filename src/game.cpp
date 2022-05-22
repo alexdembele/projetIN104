@@ -50,8 +50,8 @@ void Game::addPod()
 void Game::updatePhysics()
 {  
     int nbPod=pods_.size();
-   for(int i=0;i<nbPod;i++)
-   {
+    for(int i=0;i<nbPod;i++)
+    {
        //test angle limite
        sf::Vector2f target;
        float decalageAngle =-180/M_PI*angle(pods_[i].getDecision(pods_[i],otherCPs_,finalCP_).target_-pods_[i].pos_,sf::Vector2f (0.001,0))-pods_[i].angle_;
@@ -69,6 +69,17 @@ void Game::updatePhysics()
            pods_[i].vel_=0.85f*(pods_[i].vel_+pods_[i].getDecision(pods_[i],otherCPs_,finalCP_).power_*(target-pods_[i].pos_)/norme);
            pods_[i].pos_=pods_[i].pos_+pods_[i].vel_;
            pods_[i].angle_=-180/M_PI*angle(target-pods_[i].pos_,sf::Vector2f (0.001,0));
+           printf("%d\n",pods_[i].lapCount_);
+            if (norme < 300) {
+                if (pods_[i].nextCP_<3) {
+                    pods_[i].nextCP_=pods_[i].nextCP_+1;
+                } else if (pods_[i].nextCP_==3) {
+                    pods_[i].nextCP_=-1;
+                }
+                if (pods_[i].nextCP_==0) {
+                pods_[i].lapCount_=pods_[i].lapCount_+1;
+                }
+            }
        }
      
        else
@@ -92,9 +103,21 @@ void Game::updatePhysics()
            {
              pods_[i].angle_= (180-180/M_PI*atan((pods_[i].getDecision(pods_[i]).target_.y-pods_[i].pos_.y)/(pods_[i].getDecision(pods_[i]).target_.x-pods_[i].pos_.x)));
             }*/
+            printf("%d\n",pods_[i].lapCount_);
+            if (norme < 300) {
+                if (pods_[i].nextCP_<3) {
+                    pods_[i].nextCP_=pods_[i].nextCP_+1;
+                } else if (pods_[i].nextCP_==3) {
+                    pods_[i].nextCP_=-1;
+                }
+                if (pods_[i].nextCP_==0) {
+                pods_[i].lapCount_=pods_[i].lapCount_+1;
+                }
+            }
           
        }
        printf("physics:%f\n",pods_[i].angle_);
+       
  
       
    }

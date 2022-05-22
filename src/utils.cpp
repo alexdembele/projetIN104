@@ -55,11 +55,11 @@ void setTextCenterPosition(sf::Text &txt, sf::Vector2f center)
 bool check(float x, float y, float *listex, float *listey, int size) {
     int i = 0;
     float norm = sqrt((x-listex[i])*(x-listex[i])+(y-listey[i])*(y-listey[i]));
-    while (norm > 300 && i<size-1) {
+    while (norm > 1000 && i<size-1) {
         i=i+1;
         norm = sqrt((x-listex[i])*(x-listex[i])+(y-listey[i])*(y-listey[i]));
     }
-    if (i==size-1 && norm >300) {
+    if (i==size-1 && norm >1000) {
         return true;
     }
     return false;
