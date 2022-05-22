@@ -21,16 +21,17 @@ Decision Pod::getDecision(Pod pod, std::vector<CheckPoint> otherCPs_, FinalCheck
 {   
     //on sauvegarde la position du next checkpoint pour ce pod
     int nextCP=pod.nextCP_;
+    float power=20;
     if (nextCP!=-1) {
 
         //on va chercher la position du checkpoint pour ce pod
         sf::Vector2f position_nextCP=otherCPs_[nextCP].getPosition();
 
         //on retourne la decision
-        return Decision(position_nextCP,20.f);
+        return Decision(position_nextCP,power);
     } else if (nextCP==-1) {
         sf::Vector2f position_nextCP=finalCP_.getPosition();
-        return Decision(position_nextCP,20.f);
+        return Decision(position_nextCP,power);
     }
 
     /*
