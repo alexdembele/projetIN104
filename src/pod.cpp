@@ -34,12 +34,13 @@ Decision Pod::getDecision(Pod &pod, std::vector<CheckPoint> otherCPs_, FinalChec
         {
             pod.champignon_+=1;
         }
-        if(pod.champignon_>=0 && pod.champignon_<=100)
+        else if(pod.champignon_>=0 && pod.champignon_<=100)
         {
             power*=2;
             pod.champignon_+=1;
         }
-        printf("%d\n",pod.champignon_);
+
+        //printf("%d\n",pod.champignon_);
         //clavier
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
         {

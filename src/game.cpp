@@ -29,7 +29,7 @@ Game::Game(std::vector<sf::Vector2f> checkpointsPositions) : finalCP_(checkpoint
     
 }
 
-void Game::addPod(int nbPods)
+void Game::addPod(int nbPods,std::vector<sf::Vector2f> positionPods)
 {   
     //on reserve l'emplacement pour les pods, textures et sprite
     pods_.reserve(nbPods);
@@ -40,22 +40,23 @@ void Game::addPod(int nbPods)
         podsSprites_.emplace_back();
         
         //on cree le pod
-        sf::Vector2f pos(8000.f, 8000.f);
-        sf::Vector2f vel(100.f, 100.f);
-        pods_.emplace_back(pos,0.f,vel);
+        pods_.emplace_back(positionPods[i],0.f,sf::Vector2f(10.f,10.f));
 
         //on lui donne une texture + on l'applique au sprite + on le scale + on setorigin
-        if (i==0) {
-            podsTextures_[0].loadFromFile("../repository/Images/SWMilleniumFalcon.png");
+        if (i!=0) {
+            podsTextures_[i].loadFromFile("../repository/Images/SWMilleniumFalcon.png");
         } else {
-            podsTextures_[1].loadFromFile("../repository/Images/NMSFighterG.png");
+            podsTextures_[i].loadFromFile("../repository/Images/NMSFighterG.png");
         }
         podsSprites_[i].setTexture(podsTextures_[i]);
         setOriginToCenter(podsSprites_[i]);
-        podsSprites_[i].setPosition(8000.f, 8000.f);
+        podsSprites_[i].setPosition(positionPods[i]);
         scaleToMinSize(podsSprites_[i],800,800);
+        printf("%f;%f\n",positionPods[i].x,positionPods[i].y);
     }
     
+
+
 }
 
 void Game::updatePhysics()
@@ -89,7 +90,7 @@ void Game::updatePhysics()
                 decalage_intermediaire=(-decalageAngle-18)*(M_PI/180.f);
             }
             
-            float Nx=cos(decalage_intermediaire)*vecteur_vers_target.x -sin(decalage_intermediaire)*vecteur_vers_target.y; 
+            float Nx=cos(decalage_intermediaire)*vecteur_vers_target.x-sin(decalage_intermediaire)*vecteur_vers_target.y; 
             float Ny=sin(decalage_intermediaire)*vecteur_vers_target.x+cos(decalageAngle)*vecteur_vers_target.y;
             
             sf::Vector2f target_intermediaire;

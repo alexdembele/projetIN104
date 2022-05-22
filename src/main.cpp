@@ -36,11 +36,24 @@ int main()
 
     //Checkpoints
     unsigned int nbCP = 5;
-    std::vector<sf::Vector2f> checkpointsPositions = randomCP( nbCP);
+    std::vector<sf::Vector2f> checkpointsPositions = randomCP(nbCP);
     //Vous pouvez aussi initialiser myGame avec une liste de checkpoints prédéfinie
     Game myGame(checkpointsPositions);
-    myGame.addPod(2);
-    myGame.pods_[1].IA_=false;
+
+    //pods 
+    unsigned int nbPods = 4;
+    std::vector<sf::Vector2f> positionPods = randomCP(nbPods);
+    myGame.addPod(nbPods,positionPods);
+    myGame.pods_[0].IA_=false;
+
+
+    //affichage texte
+    sf::Font font;
+    font.loadFromFile("../repository/Fredoka-Bold.ttf");
+    sf::Text text;
+    text.setFont(font);
+    text.setCharacterSize(400);
+    text.setFillColor(sf::Color::Black);
 
 
 
@@ -75,11 +88,23 @@ int main()
 
                 //reprend le temps écoulé depuis le début pour rester précis
                 frameTime = globalClock.getElapsedTime();
+
+                //on met a jour les tours
+                std::string score="";
+                for (unsigned int i=0; i<nbPods ;++i) {
+                    if (i==0) {
+                        score += "JOUEUR : " +(std::to_string(myGame.pods_[i].lapCount_))+"\n";
+                    } else {
+                        score += "IA " + (std::to_string(i)) + " : " + (std::to_string(myGame.pods_[i].lapCount_))+"\n";
+                    }
+                }
+                text.setString(score);
             }
             
             //met à jour les sprites au temps actuel
             myGame.updateGraphics(frameTime);
             window.draw(myGame);
+            window.draw(text);
             window.display();
         }
     }
