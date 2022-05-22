@@ -154,6 +154,29 @@ void Game::updatePhysics()
             }
             
         }
+        if (pods_[i].IA_==false)
+        {   
+            float dist;
+            if (pods_[i].nextCP_>=0) {
+                sf::Vector2f podCheckpoint= pods_[i].pos_ - otherCPs_[pods_[i].nextCP_].getPosition();
+                dist=sqrt(podCheckpoint.x*podCheckpoint.x+podCheckpoint.x*podCheckpoint.x);
+            } else {
+                sf::Vector2f podCheckpoint= pods_[i].pos_ - finalCP_.getPosition();
+                dist=sqrt(podCheckpoint.x*podCheckpoint.x+podCheckpoint.x*podCheckpoint.x);
+            }
+            
+            if (dist < 300) {
+                if (pods_[i].nextCP_<3) {
+                    pods_[i].nextCP_=pods_[i].nextCP_+1;
+                } else if (pods_[i].nextCP_==3) {
+                    pods_[i].nextCP_=-1;
+                }
+                if (pods_[i].nextCP_==0) {
+                pods_[i].lapCount_=pods_[i].lapCount_+1;
+                }
+            }
+            printf("%d\n",pods_[i].nextCP_);
+        }
 
 
         //printf("%f;%f    %f;%f\n",pod_pos.x,pod_pos.y,pod_target.x+pod_pos.x,pod_target.y+pod_pos.y);
