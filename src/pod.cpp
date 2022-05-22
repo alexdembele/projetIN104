@@ -70,8 +70,10 @@ Decision Pod::getDecision(Pod pod, std::vector<CheckPoint> otherCPs_, FinalCheck
             sf::Vector2f target= pod.pos_-1000.f*sf::Vector2f(1,0);
             return Decision(target, power);
             
-                
+
+
         }
+        return Decision(pod.pos_+1000.f*pod.vel_/sqrt(pod.vel_.x*pod.vel_.x+pod.vel_.y*pod.vel_.y),0);
     } else {
 
         //IA NORMALE
