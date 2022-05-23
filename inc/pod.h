@@ -29,6 +29,14 @@ class Pod
     int nextCP_, lapCount_;
     bool IA_;
     int champignon_;
+
+    //carapace
+    int being_touched_;
+    int timer_touched_;
+
+    //bouclier
+    int bouclier_;
+    int timer_bouclier_;
     
     friend class Game; //allows game to modify pod's private attributes
 };

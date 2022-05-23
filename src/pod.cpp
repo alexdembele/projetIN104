@@ -19,6 +19,10 @@ Pod::Pod(sf::Vector2f pos, float angle, sf::Vector2f vel)
     lapCount_=0;
     IA_=true;
     champignon_=-1;
+    being_touched_=0;
+    timer_touched_=-1;
+    bouclier_=0;
+    timer_bouclier_=-1;
 };
 
 
@@ -30,7 +34,7 @@ Decision Pod::getDecision(Pod &pod, std::vector<CheckPoint> otherCPs_, FinalChec
 
     if (pod.IA_==false) {
         //champignon
-        if(sf::Keyboard::isKeyPressed(sf::Keyboard::E) && pod.champignon_<0)
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::C) && pod.champignon_<0)
         {
             pod.champignon_+=1;
         }
@@ -38,6 +42,22 @@ Decision Pod::getDecision(Pod &pod, std::vector<CheckPoint> otherCPs_, FinalChec
         {
             power*=2;
             pod.champignon_+=1;
+        }
+        
+        //bouclier
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::B) && pod.timer_bouclier_<0 && pod.bouclier_==0) {
+            pod.timer_bouclier_+=1;
+            pod.bouclier_=1;
+        } else if(pod.timer_bouclier_>=0 && pod.timer_bouclier_<=100 && pod.bouclier_==1) {
+            pod.timer_bouclier_+=1;
+        } else if (pod.timer_bouclier_==101 && pod.bouclier_==1) {
+            pod.bouclier_=-1;
+            pod.timer_bouclier_=0;
+        } else if (pod.timer_bouclier_>=0 && pod.timer_bouclier_<=100 && pod.bouclier_==-1) {
+            pod.timer_bouclier_+=1;
+        } else if (pod.timer_bouclier_==101 && pod.bouclier_==-1) {
+            pod.timer_bouclier_=-1;
+            pod.bouclier_=0;
         }
 
         

@@ -35,17 +35,23 @@ int main()
     //temps de la physique du jeu
     sf::Time physicsTime = sf::Time::Zero;
 
+    //initialisation random
+    srand(time(NULL));
+    
     //Checkpoints
-    unsigned int nbCP = 5;
+    unsigned int nbCP = 6;
     std::vector<sf::Vector2f> checkpointsPositions = randomCP(nbCP);
     //Vous pouvez aussi initialiser myGame avec une liste de checkpoints prédéfinie
-    Game myGame(checkpointsPositions);
+    Game myGame(checkpointsPositions,nbCP);
+
 
     //pods 
     unsigned int nbPods = 4;
     std::vector<sf::Vector2f> positionPods = randomCP(nbPods);
     myGame.addPod(nbPods,positionPods);
     myGame.pods_[0].IA_=false;
+
+    //printf("%f   %f\n",positionPods[2].x,checkpointsPositions[2].x);
 
 
     //affichage texte
@@ -65,6 +71,22 @@ int main()
     setOriginToCenter(sp_champi);
     sp_champi.setPosition(sf::Vector2f(15500.f,500.f));
     scaleToMinSize(sp_champi,800,800);
+
+    sf::Sprite sp_bouclier;
+    sf::Texture tex_bouclier;
+    tex_bouclier.loadFromFile("../repository/Images/bouclier.png");
+    sp_bouclier.setTexture(tex_bouclier);
+    setOriginToCenter(sp_bouclier);
+    sp_bouclier.setPosition(sf::Vector2f(14500.f,500.f));
+    scaleToMinSize(sp_bouclier,800,800);
+
+    sf::Sprite sp_bouclier_used;
+    sf::Texture tex_bouclier_used;
+    tex_bouclier_used.loadFromFile("../repository/Images/bouclier_used.png");
+    sp_bouclier_used.setTexture(tex_bouclier_used);
+    setOriginToCenter(sp_bouclier_used);
+    sp_bouclier_used.setPosition(sf::Vector2f(14500.f,500.f));
+    scaleToMinSize(sp_bouclier_used,800,800);
 
 
     while (window.isOpen())
@@ -122,6 +144,12 @@ int main()
             //bonus actif
             if (myGame.pods_[0].champignon_>=0 && myGame.pods_[0].champignon_<=100 ) {
                 window.draw(sp_champi);
+            }
+            if (myGame.pods_[0].bouclier_==1) {
+                window.draw(sp_bouclier);
+            }
+            if (myGame.pods_[0].bouclier_==-1) {
+                window.draw(sp_bouclier_used);
             }
 
             window.display();

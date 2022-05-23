@@ -5,14 +5,16 @@
 #include "pod.h"
 #include <SFML/Graphics/CircleShape.hpp>
 #include <iostream>
+#include <math.h>
 
-Game::Game(std::vector<sf::Vector2f> checkpointsPositions) : finalCP_(checkpointsPositions[0])
+Game::Game(std::vector<sf::Vector2f> checkpointsPositions, int nbCP) : finalCP_(checkpointsPositions[0])
 {   
+    nbPods_=0;
+    nbCP_=nbCP;
     //la premier ligne construit le final checkpoint a partir de la position
     //la boucle suivante construit les autres checkpoints a partir de la position
-    unsigned int size=checkpointsPositions.size();
-    otherCPs_.reserve(size-1);
-    for (unsigned int cpID=1; cpID < size; cpID++) {
+    otherCPs_.reserve(nbCP-1);
+    for (int cpID=1; cpID < nbCP; cpID++) {
         otherCPs_.emplace_back(checkpointsPositions[cpID],cpID);
     }
 
@@ -24,14 +26,13 @@ Game::Game(std::vector<sf::Vector2f> checkpointsPositions) : finalCP_(checkpoint
     backgroundTexture_.loadFromFile("../repository/Images/background.png");
     backgroundSprite_.setTexture(backgroundTexture_);
     scaleToMinSize(backgroundSprite_,16000,9000);
-
-    IA=false;
     
 }
 
 void Game::addPod(int nbPods,std::vector<sf::Vector2f> positionPods)
 {   
     //on reserve l'emplacement pour les pods, textures et sprite
+    nbPods_+=nbPods;
     pods_.reserve(nbPods);
     podsTextures_.reserve(nbPods);
     podsSprites_.reserve(nbPods);
@@ -72,9 +73,13 @@ void Game::updatePhysics()
         //sf::Vector2f vecteur_vers_direction = pods_[i].vel_;
         float decalageAngle = angle(sf::Vector2f(0.00000001f,0.f),vecteur_vers_target)-pods_[i].angle_;
 
-        if (decalageAngle>180) {
+        if (decalageAngle>=180) {
             decalageAngle-=360;
+        } else if (decalageAngle<=-180) {
+            decalageAngle+=360;
         }
+
+        //printf("%f   %f\n",pod_pos.x,pod_target.x);
 
         //si le decalageAngle est superieur a pi/10 on fait un decalage de pi/10
         if(abs(decalageAngle)>18.f)
@@ -113,10 +118,10 @@ void Game::updatePhysics()
 
             //test si sur checkpoint et si lapcount
             //printf("%d\n",pods_[i].nextCP_);
-            if (norme_vintermediaire < 300.f) {
-                if (pods_[i].nextCP_<3) {
+            if (norme_vintermediaire < 300.f && pods_[i].IA_==true) {
+                if (pods_[i].nextCP_<nbCP_-2) {
                     pods_[i].nextCP_=pods_[i].nextCP_+1;
-                } else if (pods_[i].nextCP_==3) {
+                } else if (pods_[i].nextCP_==nbCP_-2) {
                     pods_[i].nextCP_=-1;
                 }
                 if (pods_[i].nextCP_==0) {
@@ -142,10 +147,10 @@ void Game::updatePhysics()
 
             
             //test si sur checkpoint et si lapcount
-            if (norme < 300) {
-                if (pods_[i].nextCP_<3) {
+            if (norme < 300  && pods_[i].IA_==true) {
+                if (pods_[i].nextCP_<nbCP_-2) {
                     pods_[i].nextCP_=pods_[i].nextCP_+1;
-                } else if (pods_[i].nextCP_==3) {
+                } else if (pods_[i].nextCP_==nbCP_-2) {
                     pods_[i].nextCP_=-1;
                 }
                 if (pods_[i].nextCP_==0) {
@@ -154,8 +159,7 @@ void Game::updatePhysics()
             }
             
         }
-        if (pods_[i].IA_==false)
-        {   
+        if (pods_[i].IA_==false) {   
             float dist;
             if (pods_[i].nextCP_>=0) {
                 sf::Vector2f podCheckpoint= pods_[i].pos_ - otherCPs_[pods_[i].nextCP_].getPosition();
@@ -166,10 +170,10 @@ void Game::updatePhysics()
             }
 
             if (dist < 300) {
-                if (pods_[i].nextCP_<3) {
+                if (pods_[i].nextCP_<nbCP_-2) {
                     otherCPs_[pods_[i].nextCP_].fillingText_.setFillColor(sf::Color::Green);
                     pods_[i].nextCP_=pods_[i].nextCP_+1;
-                } else if (pods_[i].nextCP_==3) {
+                } else if (pods_[i].nextCP_==nbCP_-2) {
                     otherCPs_[pods_[i].nextCP_].fillingText_.setFillColor(sf::Color::Green);
                     pods_[i].nextCP_=-1;
                 }
@@ -213,9 +217,12 @@ void Game::updateGraphics(sf::Time frameTime)
         {
             
             podsSprites_[i].move(((physicsTime-frameTime)/PHYSICS_TIME_STEP)*(pods_[i].pos_-podsSprites_[i].getPosition())); //bouge sprite avec fraction temporelle
-            //podsSprites_[i].rotate(((physicsTime-frameTime)/PHYSICS_TIME_STEP)*(pods_[i].angle_-podsSprites_[i].getRotation())); //tourne sprite avec fraction temporelle
+            //int angle_pod=int(pods_[i].angle_);
+            //int angle_int=angle_pod%360;
+            //float angle = angle_int;
+            //podsSprites_[i].rotate(((physicsTime-frameTime)/PHYSICS_TIME_STEP)*(angle-podsSprites_[i].getRotation())); //tourne sprite avec fraction temporelle
             //probleme modulo
-            
+            //printf("%f;%f\n",angle,podsSprites_[2].getRotation());
         }
     }
 }    

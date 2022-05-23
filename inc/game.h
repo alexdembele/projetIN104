@@ -8,6 +8,7 @@
 #include <cmath>
 #include "checkpoint.h"
 #include "pod.h"
+#include <math.h>
 
 const unsigned int NUMBER_OF_LAPS = 3;
 const float FRICTION_COEFF = 0.85;
@@ -20,7 +21,7 @@ class Game : public sf::Drawable
 {
     public :
     Game(); //create a Game with 2 to 8 checkpoints at random positions (they shouldn't overlap)
-    Game(std::vector<sf::Vector2f> checkpointsPositions); //create a Game with predefined checkpoints positions
+    Game(std::vector<sf::Vector2f> checkpointsPositions,int nbCP); //create a Game with predefined checkpoints positions
 
     void addPod(int nbPods,std::vector<sf::Vector2f> positionPods); //can add various arguments here to chose the apparence or the decision making type of the pod
     void updatePhysics();
@@ -42,7 +43,8 @@ class Game : public sf::Drawable
     sf::Time lastFrameTime;
     sf::Time physicsTime;
 
-    bool IA;
+    int nbCP_;
+    int nbPods_;
 
 };
 
