@@ -1,18 +1,21 @@
 #include "../inc/game.h"
 #include "../inc/checkpoint.h"
 #include "../inc/utils.h"
+#include "SFML/Graphics/RectangleShape.hpp"
 #include "SFML/System/Vector2.hpp"
 #include "pod.h"
 #include <SFML/Graphics/CircleShape.hpp>
 #include <iostream>
+#include <math.h>
 
-Game::Game(std::vector<sf::Vector2f> checkpointsPositions) : finalCP_(checkpointsPositions[0])
+Game::Game(std::vector<sf::Vector2f> checkpointsPositions, int nbCP) : finalCP_(checkpointsPositions[0])
 {   
+    nbPods_=0;
+    nbCP_=nbCP;
     //la premier ligne construit le final checkpoint a partir de la position
     //la boucle suivante construit les autres checkpoints a partir de la position
-    unsigned int size=checkpointsPositions.size();
-    otherCPs_.reserve(size-1);
-    for (unsigned int cpID=1; cpID < size; cpID++) {
+    otherCPs_.reserve(nbCP-1);
+    for (int cpID=1; cpID < nbCP; cpID++) {
         otherCPs_.emplace_back(checkpointsPositions[cpID],cpID);
     }
 
@@ -25,13 +28,48 @@ Game::Game(std::vector<sf::Vector2f> checkpointsPositions) : finalCP_(checkpoint
     backgroundSprite_.setTexture(backgroundTexture_);
     scaleToMinSize(backgroundSprite_,16000,9000);
 
-    IA=false;
-    
+    //laser
+    laser_.shape_=sf::RectangleShape(sf::Vector2f(500.f,70.f));
+    setOriginToCenter(laser_.shape_);
+    laser_.shape_.setFillColor(sf::Color::Green);
+    laser_.shape_.setOutlineThickness(10);
+    laser_.shape_.setOutlineColor(sf::Color::Black);
+    laser_.angle_=0.f;
+    laser_.pos_=sf::Vector2f(0.f,0.f);
+    laser_.vel_=sf::Vector2f(0.f,0.f);
+
+    //affichage texte
+    font.loadFromFile("../repository/Fredoka-Bold.ttf");
+    text.setFont(font);
+    text.setCharacterSize(400);
+    text.setFillColor(sf::Color::Black);
+
+
+    //affichage bonus
+    tex_champi.loadFromFile("../repository/Images/champignon.png");
+    sp_champi.setTexture(tex_champi);
+    setOriginToCenter(sp_champi);
+    sp_champi.setPosition(sf::Vector2f(15500.f,500.f));
+    scaleToMinSize(sp_champi,800,800);
+
+    tex_bouclier.loadFromFile("../repository/Images/bouclier.png");
+    sp_bouclier.setTexture(tex_bouclier);
+    setOriginToCenter(sp_bouclier);
+    sp_bouclier.setPosition(sf::Vector2f(14500.f,500.f));
+    scaleToMinSize(sp_bouclier,800,800);
+
+
+    tex_bouclier_used.loadFromFile("../repository/Images/bouclier_used.png");
+    sp_bouclier_used.setTexture(tex_bouclier_used);
+    setOriginToCenter(sp_bouclier_used);
+    sp_bouclier_used.setPosition(sf::Vector2f(14500.f,500.f));
+    scaleToMinSize(sp_bouclier_used,800,800);
 }
 
 void Game::addPod(int nbPods,std::vector<sf::Vector2f> positionPods)
 {   
     //on reserve l'emplacement pour les pods, textures et sprite
+    nbPods_+=nbPods;
     pods_.reserve(nbPods);
     podsTextures_.reserve(nbPods);
     podsSprites_.reserve(nbPods);
@@ -53,6 +91,8 @@ void Game::addPod(int nbPods,std::vector<sf::Vector2f> positionPods)
         podsSprites_[i].setPosition(positionPods[i]);
         scaleToMinSize(podsSprites_[i],800,800);
         //printf("%f;%f\n",positionPods[i].x,positionPods[i].y);
+
+
     }
     
 
@@ -72,9 +112,13 @@ void Game::updatePhysics()
         //sf::Vector2f vecteur_vers_direction = pods_[i].vel_;
         float decalageAngle = angle(sf::Vector2f(0.00000001f,0.f),vecteur_vers_target)-pods_[i].angle_;
 
-        if (decalageAngle>180) {
+        if (decalageAngle>=180) {
             decalageAngle-=360;
+        } else if (decalageAngle<=-180) {
+            decalageAngle+=360;
         }
+
+        //printf("%f   %f\n",pod_pos.x,pod_target.x);
 
         //si le decalageAngle est superieur a pi/10 on fait un decalage de pi/10
         if(abs(decalageAngle)>18.f)
@@ -113,10 +157,10 @@ void Game::updatePhysics()
 
             //test si sur checkpoint et si lapcount
             //printf("%d\n",pods_[i].nextCP_);
-            if (norme_vintermediaire < 300.f) {
-                if (pods_[i].nextCP_<3) {
+            if (norme_vintermediaire < 300.f && pods_[i].IA_==true) {
+                if (pods_[i].nextCP_<nbCP_-2) {
                     pods_[i].nextCP_=pods_[i].nextCP_+1;
-                } else if (pods_[i].nextCP_==3) {
+                } else if (pods_[i].nextCP_==nbCP_-2) {
                     pods_[i].nextCP_=-1;
                 }
                 if (pods_[i].nextCP_==0) {
@@ -142,10 +186,10 @@ void Game::updatePhysics()
 
             
             //test si sur checkpoint et si lapcount
-            if (norme < 300) {
-                if (pods_[i].nextCP_<3) {
+            if (norme < 300.f  && pods_[i].IA_==true) {
+                if (pods_[i].nextCP_<nbCP_-2) {
                     pods_[i].nextCP_=pods_[i].nextCP_+1;
-                } else if (pods_[i].nextCP_==3) {
+                } else if (pods_[i].nextCP_==nbCP_-2) {
                     pods_[i].nextCP_=-1;
                 }
                 if (pods_[i].nextCP_==0) {
@@ -154,8 +198,7 @@ void Game::updatePhysics()
             }
             
         }
-        if (pods_[i].IA_==false)
-        {   
+        if (pods_[i].IA_==false) {   
             float dist;
             if (pods_[i].nextCP_>=0) {
                 sf::Vector2f podCheckpoint= pods_[i].pos_ - otherCPs_[pods_[i].nextCP_].getPosition();
@@ -166,15 +209,15 @@ void Game::updatePhysics()
             }
 
             if (dist < 300) {
-                if (pods_[i].nextCP_<3) {
+                if (pods_[i].nextCP_<nbCP_-2) {
                     otherCPs_[pods_[i].nextCP_].fillingText_.setFillColor(sf::Color::Green);
                     pods_[i].nextCP_=pods_[i].nextCP_+1;
-                } else if (pods_[i].nextCP_==3) {
+                } else if (pods_[i].nextCP_==nbCP_-2) {
                     otherCPs_[pods_[i].nextCP_].fillingText_.setFillColor(sf::Color::Green);
                     pods_[i].nextCP_=-1;
                 }
                 if (pods_[i].nextCP_==0) {
-                    for (int j=0;j<4;++j) {
+                    for (int j=0;j<nbCP_-1;++j) {
                         otherCPs_[j].fillingText_.setFillColor(sf::Color::White);
                     }
                     pods_[i].lapCount_=pods_[i].lapCount_+1;
@@ -183,10 +226,40 @@ void Game::updatePhysics()
             //printf("%d\n",pods_[i].nextCP_);
         }
 
-
+        //istouched
+        if (isTouched(pods_[i]) && pods_[i].being_touched_==0) {
+            pods_[i].timer_touched_+=1;
+            pods_[i].being_touched_=1;
+            pods_[i].vel_=sf::Vector2f(0.0001f,0.0001f);
+        } else if (pods_[i].timer_touched_>=0 && pods_[i].timer_touched_<=50 && pods_[i].being_touched_==1) {
+            pods_[i].timer_touched_+=1;
+            pods_[i].vel_=sf::Vector2f(0.0001f,0.0001f);
+        } else if (pods_[i].timer_touched_==51 && pods_[i].being_touched_==1) {
+            pods_[i].timer_touched_=0;
+            pods_[i].being_touched_=-1;
+            pods_[i].vel_=sf::Vector2f(10.f,10.f);
+        } else if (pods_[i].timer_touched_>=0 && pods_[i].timer_touched_<=50 && pods_[i].being_touched_==-1) {
+            pods_[i].timer_touched_+=1;
+        } else if (pods_[i].timer_touched_==51 && pods_[i].being_touched_==-1) {
+            pods_[i].timer_touched_=-1;
+            pods_[i].being_touched_=0;
+        }
+        //printf("%d : %d   %f  %f\n",i,pods_[i].timer_touched_,pods_[i].vel_.x,pods_[i].vel_.y);
         //printf("%f;%f    %f;%f\n",pod_pos.x,pod_pos.y,pod_target.x+pod_pos.x,pod_target.y+pod_pos.y);
         //printf("physics:%f\n",pods_[i].angle_);
     }
+
+    //attaque du pod du joueur
+    if (pods_[0].timer_attaque_==0) {
+        attaque(pods_[0]);
+    } else if (pods_[0].timer_attaque_>0 && pods_[0].timer_attaque_<=100) {
+        laser_.pos_=laser_.pos_+laser_.vel_;
+        laser_.shape_.setPosition(laser_.pos_);
+        //printf("%f  %f\n",laser_.pos_.x,laser_.pos_.y);
+    } else if (pods_[0].timer_attaque_>100) {
+        laser_.pos_=sf::Vector2f(0.f,0.f);
+    }
+    //printf("%d  %d\n", pods_[0].attaque_,pods_[0].timer_attaque_);
     //printf("%f;%f\n",pods_[0].pos_.x,pods_[0].pos_.y);
     
 
@@ -213,9 +286,12 @@ void Game::updateGraphics(sf::Time frameTime)
         {
             
             podsSprites_[i].move(((physicsTime-frameTime)/PHYSICS_TIME_STEP)*(pods_[i].pos_-podsSprites_[i].getPosition())); //bouge sprite avec fraction temporelle
-            //podsSprites_[i].rotate(((physicsTime-frameTime)/PHYSICS_TIME_STEP)*(pods_[i].angle_-podsSprites_[i].getRotation())); //tourne sprite avec fraction temporelle
+            //int angle_pod=int(pods_[i].angle_);
+            //int angle_int=angle_pod%360;
+            //float angle = angle_int;
+            //podsSprites_[i].rotate(((physicsTime-frameTime)/PHYSICS_TIME_STEP)*(angle-podsSprites_[i].getRotation())); //tourne sprite avec fraction temporelle
             //probleme modulo
-            
+            //printf("%f;%f\n",angle,podsSprites_[2].getRotation());
         }
     }
 }    
@@ -235,4 +311,37 @@ void Game::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
         target.draw(podSprite, states);
     }
+
+    //bonus actif
+    if (pods_[0].champignon_>=0 && pods_[0].champignon_<=100 ) {
+        target.draw(sp_champi);
+    }
+    if (pods_[0].bouclier_==1) {
+        target.draw(sp_bouclier);
+    }
+    if (pods_[0].bouclier_==-1) {
+        target.draw(sp_bouclier_used);
+    }
+
+    if (pods_[0].attaque_==1) {
+        target.draw(laser_.shape_);
+    }
+}
+
+
+void Game::attaque(Pod pod) {
+    laser_.vel_=300.f*pod.vel_/float (sqrt(pod.vel_.x*pod.vel_.x+pod.vel_.y*pod.vel_.y));
+    laser_.pos_= pod.pos_ + 3.f*laser_.vel_;
+    laser_.angle_=pod.angle_;
+    laser_.shape_.setRotation(laser_.angle_);
+    laser_.shape_.setPosition(laser_.pos_);
+}
+
+bool Game::isTouched(Pod pod) {
+    sf::Vector2f vect = laser_.pos_-pod.pos_;
+    float dist=sqrt(vect.x*vect.x+vect.y*vect.y);
+    if (dist<300) {
+        return true;
+    }
+    return false;
 }

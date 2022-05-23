@@ -5,7 +5,7 @@
 
 
 Decision::Decision(sf::Vector2f target, float power) 
-{
+{   
     target_=target;
     power_=power;
 };
@@ -14,11 +14,23 @@ Pod::Pod(sf::Vector2f pos, float angle, sf::Vector2f vel)
 {
     pos_=pos;
     vel_=vel;
-    angle_=angle; //angle in radians
+    angle_=angle; //angle en degrés
+    
     nextCP_=0;
     lapCount_=0;
+    
     IA_=true;
+    
     champignon_=-1;
+    
+    being_touched_=0;
+    timer_touched_=-1;
+    
+    bouclier_=0;
+    timer_bouclier_=-1;
+    
+    attaque_=0;
+    timer_attaque_=-1;
 };
 
 
@@ -30,7 +42,7 @@ Decision Pod::getDecision(Pod &pod, std::vector<CheckPoint> otherCPs_, FinalChec
 
     if (pod.IA_==false) {
         //champignon
-        if(sf::Keyboard::isKeyPressed(sf::Keyboard::E) && pod.champignon_<0)
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::C) && pod.champignon_<0)
         {
             pod.champignon_+=1;
         }
@@ -39,6 +51,39 @@ Decision Pod::getDecision(Pod &pod, std::vector<CheckPoint> otherCPs_, FinalChec
             power*=2;
             pod.champignon_+=1;
         }
+        
+        //bouclier
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::B) && pod.timer_bouclier_<0 && pod.bouclier_==0) {
+            pod.timer_bouclier_+=1;
+            pod.bouclier_=1;
+        } else if(pod.timer_bouclier_>=0 && pod.timer_bouclier_<=100 && pod.bouclier_==1) {
+            pod.timer_bouclier_+=1;
+        } else if (pod.timer_bouclier_==101 && pod.bouclier_==1) {
+            pod.bouclier_=-1;
+            pod.timer_bouclier_=0;
+        } else if (pod.timer_bouclier_>=0 && pod.timer_bouclier_<=100 && pod.bouclier_==-1) {
+            pod.timer_bouclier_+=1;
+        } else if (pod.timer_bouclier_==101 && pod.bouclier_==-1) {
+            pod.timer_bouclier_=-1;
+            pod.bouclier_=0;
+        }
+
+        //laser
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::L) && pod.timer_attaque_<0 && pod.attaque_==0) {
+            pod.timer_attaque_+=1;
+            pod.attaque_=1;
+        } else if(pod.timer_attaque_>=0 && pod.timer_attaque_<=35 && pod.attaque_==1) {
+            pod.timer_attaque_+=1;
+        } else if (pod.timer_attaque_==36 && pod.attaque_==1) {
+            pod.attaque_=-1;
+            pod.timer_attaque_=0;
+        } else if (pod.timer_attaque_>=0 && pod.timer_attaque_<=2 && pod.attaque_==-1) {
+            pod.timer_attaque_+=1;
+        } else if (pod.timer_attaque_==3 && pod.attaque_==-1) {
+            pod.timer_attaque_=-1;
+            pod.attaque_=0;
+        }
+        
 
         
         //clavier
@@ -140,4 +185,16 @@ Decision Pod::getDecision(Pod &pod, std::vector<CheckPoint> otherCPs_, FinalChec
     
     //default
     //return Decision(sf::Vector2f(1000.f,1000.f),power);
+};
+
+void Pod::changeMode(){
+    IA_=!(IA_);
+};
+
+void Pod::addLap(){
+    lapCount_++;
+};
+
+int Pod::getLap(){
+    return lapCount_;
 };

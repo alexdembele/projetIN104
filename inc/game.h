@@ -6,8 +6,14 @@
 #include <SFML/Window.hpp>
 #include <vector>
 #include <cmath>
+#include "SFML/Graphics/Font.hpp"
+#include "SFML/Graphics/Sprite.hpp"
+#include "SFML/Graphics/Text.hpp"
+#include "SFML/Graphics/Texture.hpp"
+#include "SFML/System/Vector2.hpp"
 #include "checkpoint.h"
 #include "pod.h"
+#include <math.h>
 
 const unsigned int NUMBER_OF_LAPS = 3;
 const float FRICTION_COEFF = 0.85;
@@ -16,11 +22,18 @@ const sf::Time PHYSICS_TIME_STEP = sf::milliseconds(100);
 const std::string IMAGES_PATH = "../repository/Images/";
 const std::string FONT_PATH = "../repository/";
 
+struct laser {
+    sf::RectangleShape shape_;
+    sf::Vector2f pos_;
+    float angle_;
+    sf::Vector2f vel_;
+};
+
 class Game : public sf::Drawable
 {
     public :
     Game(); //create a Game with 2 to 8 checkpoints at random positions (they shouldn't overlap)
-    Game(std::vector<sf::Vector2f> checkpointsPositions); //create a Game with predefined checkpoints positions
+    Game(std::vector<sf::Vector2f> checkpointsPositions,int nbCP); //create a Game with predefined checkpoints positions
 
     void addPod(int nbPods,std::vector<sf::Vector2f> positionPods); //can add various arguments here to chose the apparence or the decision making type of the pod
     void updatePhysics();
@@ -42,7 +55,26 @@ class Game : public sf::Drawable
     sf::Time lastFrameTime;
     sf::Time physicsTime;
 
-    bool IA;
+    int nbCP_;
+    int nbPods_;
+
+    struct laser laser_;
+
+    sf::Texture tex_bouclier;
+    sf::Sprite sp_bouclier;
+
+    sf::Texture tex_bouclier_used;
+    sf::Sprite sp_bouclier_used;
+
+    sf::Texture tex_champi;
+    sf::Sprite sp_champi;
+
+    sf::Text text;
+    sf::Font font;
+
+    void attaque(Pod pod);
+    bool isTouched(Pod pod);
+
 
 };
 

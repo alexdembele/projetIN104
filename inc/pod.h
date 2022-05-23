@@ -23,15 +23,36 @@ class Pod
 
     Decision getDecision(Pod &pod, std::vector<CheckPoint> otherCPs_,FinalCheckPoint finalCP_) const; 
 
-    //private :
+    void addLap();
+    int getLap();
+    void changeMode();
+
+    private :
     sf::Vector2f pos_, vel_; //position and velocity vectors
     float angle_; //angle in radians
     int nextCP_, lapCount_;
     bool IA_;
+
+    //bonus
     int champignon_;
+
+    //attaque
+    //laser
+    int attaque_;
+    int timer_attaque_;
+    //stun
+    int being_touched_;
+    int timer_touched_;
+    //bouclier
+    int bouclier_;
+    int timer_bouclier_;
+
+    
+    
     
     
     friend class Game; //allows game to modify pod's private attributes
+
 };
 
 #endif

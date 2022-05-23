@@ -3,8 +3,8 @@
 #include <stdlib.h>
 #include <time.h>
 
-#define MAX_X 16000
-#define MAX_Y 9000
+#define MAX_X 15000
+#define MAX_Y 8000
 void setOriginToCenter(sf::Sprite &object)
 {
     auto rect = object.getGlobalBounds();
@@ -67,21 +67,20 @@ bool check(float x, float y, float *listex, float *listey, int size) {
 
 std::vector<sf::Vector2f> randomCP(int nbCP) {
     std::vector<sf::Vector2f> checkpointsPositions;
-    srand(time(NULL));
     float listex[nbCP];
     float listey[nbCP];
-    float x = rand() % MAX_X;
-    float y = rand() % MAX_Y;
+    float x = rand() % MAX_X+500;
+    float y = rand() % MAX_Y+500;
     listex[0]=x;
     listey[0]=y;
     sf::Vector2f v(x,y);
     checkpointsPositions.emplace_back(v);
     for (int i=1; i<nbCP; ++i) {
-        x = rand() % MAX_X;
-        y = rand() % MAX_Y;
+        x = rand() % MAX_X+500;
+        y = rand() % MAX_Y+500;
         while (check(x,y,listex,listey,i)==false){
-            x = rand() % MAX_X;
-            y = rand() % MAX_Y;
+            x = rand() % MAX_X+500;
+            y = rand() % MAX_Y+500;
         }
         listex[i]=x;
         listey[i]=y;
@@ -92,8 +91,7 @@ std::vector<sf::Vector2f> randomCP(int nbCP) {
     return checkpointsPositions;
 }
 
-float angle(sf::Vector2f a, sf::Vector2f b)
-{
+float angle(sf::Vector2f a, sf::Vector2f b) {
     float dot=a.x * b.x + a.y *b.y;
     float norma=sqrt(a.x*a.x+a.y*a.y);
     float normb=sqrt(b.x*b.x+b.y*b.y);
@@ -107,6 +105,5 @@ float angle(sf::Vector2f a, sf::Vector2f b)
     {
         return -(180/M_PI)*acosf(dot/(norma*normb));
     }
-
 
 }

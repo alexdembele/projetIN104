@@ -35,37 +35,23 @@ int main()
     //temps de la physique du jeu
     sf::Time physicsTime = sf::Time::Zero;
 
+    //initialisation random
+    srand(time(NULL));
+    
     //Checkpoints
-    unsigned int nbCP = 5;
+    unsigned int nbCP = 6;
     std::vector<sf::Vector2f> checkpointsPositions = randomCP(nbCP);
     //Vous pouvez aussi initialiser myGame avec une liste de checkpoints prédéfinie
-    Game myGame(checkpointsPositions);
+    Game myGame(checkpointsPositions,nbCP);
+
 
     //pods 
     unsigned int nbPods = 4;
     std::vector<sf::Vector2f> positionPods = randomCP(nbPods);
     myGame.addPod(nbPods,positionPods);
-    myGame.pods_[0].IA_=false;
+    myGame.pods_[0].changeMode();
 
-
-    //affichage texte
-    sf::Font font;
-    font.loadFromFile("../repository/Fredoka-Bold.ttf");
-    sf::Text text;
-    text.setFont(font);
-    text.setCharacterSize(400);
-    text.setFillColor(sf::Color::Black);
-
-
-    //affichage bonus
-    sf::Sprite sp_champi;
-    sf::Texture tex_champi;
-    tex_champi.loadFromFile("../repository/Images/champignon.png");
-    sp_champi.setTexture(tex_champi);
-    setOriginToCenter(sp_champi);
-    sp_champi.setPosition(sf::Vector2f(15500.f,500.f));
-    scaleToMinSize(sp_champi,800,800);
-
+    //printf("%f   %f\n",positionPods[2].x,checkpointsPositions[2].x);
 
     while (window.isOpen())
     {
@@ -103,12 +89,12 @@ int main()
                 std::string score="";
                 for (unsigned int i=0; i<nbPods ;++i) {
                     if (i==0) {
-                        score += "JOUEUR : " +(std::to_string(myGame.pods_[i].lapCount_))+"\n";
+                        score += "JOUEUR : " +(std::to_string(myGame.pods_[i].getLap()))+"\n";
                     } else {
-                        score += "IA " + (std::to_string(i)) + " : " + (std::to_string(myGame.pods_[i].lapCount_))+"\n";
+                        score += "IA " + (std::to_string(i)) + " : " + (std::to_string(myGame.pods_[i].getLap()))+"\n";
                     }
                 }
-                text.setString(score);
+                myGame.text.setString(score);
 
                 
 
@@ -117,12 +103,7 @@ int main()
             //met à jour les sprites au temps actuel
             myGame.updateGraphics(frameTime);
             window.draw(myGame);
-            window.draw(text);
-
-            //bonus actif
-            if (myGame.pods_[0].champignon_>=0 && myGame.pods_[0].champignon_<=100 ) {
-                window.draw(sp_champi);
-            }
+            window.draw(myGame.text);
 
             window.display();
         }
