@@ -30,6 +30,7 @@ class Pod
     bool IA_;
     int champignon_;
     
+    
     friend class Game; //allows game to modify pod's private attributes
 };
 
