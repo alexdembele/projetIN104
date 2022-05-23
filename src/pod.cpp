@@ -31,6 +31,9 @@ Pod::Pod(sf::Vector2f pos, float angle, sf::Vector2f vel)
     
     attaque_=0;
     timer_attaque_=-1;
+
+    asteroide_pose_=0;
+    asteroide_timer_=-1;
 };
 
 
@@ -41,6 +44,24 @@ Decision Pod::getDecision(Pod &pod, std::vector<CheckPoint> otherCPs_, FinalChec
     float power=30.f;
 
     if (pod.IA_==false) {
+        //asteroide
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::A) && pod.asteroide_timer_<0 && pod.asteroide_pose_==0) {
+            pod.asteroide_timer_+=1;
+            pod.asteroide_pose_=1;
+        } else if(pod.asteroide_timer_>=0 && pod.asteroide_timer_<=100 && pod.asteroide_pose_==1) {
+            pod.asteroide_timer_+=1;
+        } else if (pod.asteroide_timer_==101 && pod.asteroide_pose_==1) {
+            pod.asteroide_pose_=-1;
+            pod.asteroide_timer_=0;
+        } else if (pod.asteroide_timer_>=0 && pod.asteroide_timer_<=100 && pod.asteroide_pose_==-1) {
+            pod.asteroide_timer_+=1;
+        } else if (pod.asteroide_timer_==101 && pod.asteroide_pose_==-1) {
+            pod.asteroide_timer_=-1;
+            pod.asteroide_pose_=0;
+        }
+
+
+
         //champignon
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::C) && pod.champignon_<0)
         {

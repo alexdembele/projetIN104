@@ -7,6 +7,8 @@
 #include <SFML/Graphics/CircleShape.hpp>
 #include <iostream>
 #include <math.h>
+#include "../inc/asteroide.h"
+
 
 Game::Game(std::vector<sf::Vector2f> checkpointsPositions, int nbCP) : finalCP_(checkpointsPositions[0])
 {   
@@ -64,6 +66,14 @@ Game::Game(std::vector<sf::Vector2f> checkpointsPositions, int nbCP) : finalCP_(
     setOriginToCenter(sp_bouclier_used);
     sp_bouclier_used.setPosition(sf::Vector2f(14500.f,500.f));
     scaleToMinSize(sp_bouclier_used,800,800);
+
+    //asteroide
+    asteroide_.tex_.loadFromFile("../repository/Images/asteroide.png");
+    asteroide_.sp_.setTexture(asteroide_.tex_);
+    setOriginToCenter(asteroide_.sp_);
+    asteroide_.sp_.setPosition(sf::Vector2f(0.f,0.f));
+    scaleToMinSize(asteroide_.sp_,800,800);
+    
 }
 
 void Game::addPod(int nbPods,std::vector<sf::Vector2f> positionPods)
@@ -237,7 +247,7 @@ void Game::updatePhysics()
         } else if (pods_[i].timer_touched_==51 && pods_[i].being_touched_==1) {
             pods_[i].timer_touched_=0;
             pods_[i].being_touched_=-1;
-            pods_[i].vel_=sf::Vector2f(10.f,10.f);
+            //pods_[i].vel_=sf::Vector2f(10.f,10.f);
         } else if (pods_[i].timer_touched_>=0 && pods_[i].timer_touched_<=50 && pods_[i].being_touched_==-1) {
             pods_[i].timer_touched_+=1;
         } else if (pods_[i].timer_touched_==51 && pods_[i].being_touched_==-1) {
@@ -259,6 +269,16 @@ void Game::updatePhysics()
     } else if (pods_[0].timer_attaque_>100) {
         laser_.pos_=sf::Vector2f(0.f,0.f);
     }
+
+    //pose de l'asteroide par le joueur
+    if (pods_[0].asteroide_pose_==1 && pods_[0].asteroide_timer_==0) {
+        asteroide_.pos_=pods_[0].pos_;
+        asteroide_.sp_.setPosition(asteroide_.pos_);
+    } else if (pods_[0].asteroide_pose_==-1 && pods_[0].asteroide_timer_==0) {
+        asteroide_.pos_=sf::Vector2f(0.f,0.f);
+        asteroide_.sp_.setPosition(asteroide_.pos_);
+    }
+
     //printf("%d  %d\n", pods_[0].attaque_,pods_[0].timer_attaque_);
     //printf("%f;%f\n",pods_[0].pos_.x,pods_[0].pos_.y);
     
@@ -312,6 +332,8 @@ void Game::draw(sf::RenderTarget& target, sf::RenderStates states) const
         target.draw(podSprite, states);
     }
 
+    target.draw(text);
+
     //bonus actif
     if (pods_[0].champignon_>=0 && pods_[0].champignon_<=100 ) {
         target.draw(sp_champi);
@@ -326,12 +348,17 @@ void Game::draw(sf::RenderTarget& target, sf::RenderStates states) const
     if (pods_[0].attaque_==1) {
         target.draw(laser_.shape_);
     }
+
+    if (pods_[0].asteroide_pose_==1) {
+        target.draw(asteroide_.sp_);
+    }
 }
 
 
 void Game::attaque(Pod pod) {
     laser_.vel_=300.f*pod.vel_/float (sqrt(pod.vel_.x*pod.vel_.x+pod.vel_.y*pod.vel_.y));
     laser_.pos_= pod.pos_ + 3.f*laser_.vel_;
+    //laser_.angle_=angle(laser_.vel_,sf::Vector2f(0.f,1.f));
     laser_.angle_=pod.angle_;
     laser_.shape_.setRotation(laser_.angle_);
     laser_.shape_.setPosition(laser_.pos_);

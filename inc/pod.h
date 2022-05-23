@@ -46,6 +46,9 @@ class Pod
     //bouclier
     int bouclier_;
     int timer_bouclier_;
+    //asteroide
+    int asteroide_pose_;
+    int asteroide_timer_;
 
     
     

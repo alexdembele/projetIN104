@@ -14,6 +14,7 @@
 #include "checkpoint.h"
 #include "pod.h"
 #include <math.h>
+#include "../inc/asteroide.h"
 
 const unsigned int NUMBER_OF_LAPS = 3;
 const float FRICTION_COEFF = 0.85;
@@ -74,6 +75,8 @@ class Game : public sf::Drawable
 
     void attaque(Pod pod);
     bool isTouched(Pod pod);
+
+    Asteroide asteroide_;
 
 
 };

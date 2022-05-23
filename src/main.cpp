@@ -103,8 +103,6 @@ int main()
             //met à jour les sprites au temps actuel
             myGame.updateGraphics(frameTime);
             window.draw(myGame);
-            window.draw(myGame.text);
-
             window.display();
         }
     }
