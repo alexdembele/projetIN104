@@ -6,6 +6,10 @@
 #include <SFML/Window.hpp>
 #include <vector>
 #include <cmath>
+#include "SFML/Graphics/Font.hpp"
+#include "SFML/Graphics/Sprite.hpp"
+#include "SFML/Graphics/Text.hpp"
+#include "SFML/Graphics/Texture.hpp"
 #include "checkpoint.h"
 #include "pod.h"
 #include <math.h>
@@ -45,6 +49,23 @@ class Game : public sf::Drawable
 
     int nbCP_;
     int nbPods_;
+
+    sf::RectangleShape laser_;
+
+    sf::Texture tex_bouclier;
+    sf::Sprite sp_bouclier;
+
+    sf::Texture tex_bouclier_used;
+    sf::Sprite sp_bouclier_used;
+
+    sf::Texture tex_champi;
+    sf::Sprite sp_champi;
+
+    sf::Text text;
+    sf::Font font;
+
+    void attaque(Pod pod);
+
 
 };
 

@@ -1,6 +1,7 @@
 #include "../inc/game.h"
 #include "../inc/checkpoint.h"
 #include "../inc/utils.h"
+#include "SFML/Graphics/RectangleShape.hpp"
 #include "SFML/System/Vector2.hpp"
 #include "pod.h"
 #include <SFML/Graphics/CircleShape.hpp>
@@ -26,7 +27,40 @@ Game::Game(std::vector<sf::Vector2f> checkpointsPositions, int nbCP) : finalCP_(
     backgroundTexture_.loadFromFile("../repository/Images/background.png");
     backgroundSprite_.setTexture(backgroundTexture_);
     scaleToMinSize(backgroundSprite_,16000,9000);
-    
+
+    //laser
+    laser_=sf::RectangleShape(sf::Vector2f(500.f,70.f));
+    setOriginToCenter(laser_);
+    laser_.setFillColor(sf::Color::Green);
+    laser_.setOutlineThickness(10);
+    laser_.setOutlineColor(sf::Color::Black);
+
+    //affichage texte
+    font.loadFromFile("../repository/Fredoka-Bold.ttf");
+    text.setFont(font);
+    text.setCharacterSize(400);
+    text.setFillColor(sf::Color::Black);
+
+
+    //affichage bonus
+    tex_champi.loadFromFile("../repository/Images/champignon.png");
+    sp_champi.setTexture(tex_champi);
+    setOriginToCenter(sp_champi);
+    sp_champi.setPosition(sf::Vector2f(15500.f,500.f));
+    scaleToMinSize(sp_champi,800,800);
+
+    tex_bouclier.loadFromFile("../repository/Images/bouclier.png");
+    sp_bouclier.setTexture(tex_bouclier);
+    setOriginToCenter(sp_bouclier);
+    sp_bouclier.setPosition(sf::Vector2f(14500.f,500.f));
+    scaleToMinSize(sp_bouclier,800,800);
+
+
+    tex_bouclier_used.loadFromFile("../repository/Images/bouclier_used.png");
+    sp_bouclier_used.setTexture(tex_bouclier_used);
+    setOriginToCenter(sp_bouclier_used);
+    sp_bouclier_used.setPosition(sf::Vector2f(14500.f,500.f));
+    scaleToMinSize(sp_bouclier_used,800,800);
 }
 
 void Game::addPod(int nbPods,std::vector<sf::Vector2f> positionPods)
@@ -54,6 +88,8 @@ void Game::addPod(int nbPods,std::vector<sf::Vector2f> positionPods)
         podsSprites_[i].setPosition(positionPods[i]);
         scaleToMinSize(podsSprites_[i],800,800);
         //printf("%f;%f\n",positionPods[i].x,positionPods[i].y);
+
+
     }
     
 
@@ -178,7 +214,7 @@ void Game::updatePhysics()
                     pods_[i].nextCP_=-1;
                 }
                 if (pods_[i].nextCP_==0) {
-                    for (int j=0;j<4;++j) {
+                    for (int j=0;j<nbCP_-1;++j) {
                         otherCPs_[j].fillingText_.setFillColor(sf::Color::White);
                     }
                     pods_[i].lapCount_=pods_[i].lapCount_+1;
@@ -191,6 +227,10 @@ void Game::updatePhysics()
         //printf("%f;%f    %f;%f\n",pod_pos.x,pod_pos.y,pod_target.x+pod_pos.x,pod_target.y+pod_pos.y);
         //printf("physics:%f\n",pods_[i].angle_);
     }
+    if (pods_[0].timer_attaque_==0) {
+        attaque(pods_[0]);
+    }
+    //printf("%d\n", pods_[0].attaque_);
     //printf("%f;%f\n",pods_[0].pos_.x,pods_[0].pos_.y);
     
 
@@ -242,4 +282,28 @@ void Game::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
         target.draw(podSprite, states);
     }
+
+    //bonus actif
+    if (pods_[0].champignon_>=0 && pods_[0].champignon_<=100 ) {
+        target.draw(sp_champi);
+    }
+    if (pods_[0].bouclier_==1) {
+        target.draw(sp_bouclier);
+    }
+    if (pods_[0].bouclier_==-1) {
+        target.draw(sp_bouclier_used);
+    }
+
+    if (pods_[0].attaque_==1) {
+        target.draw(laser_);
+    }
 }
+
+
+void Game::attaque(Pod pod) {
+        sf::Vector2f Vdirection=pod.pos_+1000.f*pod.vel_/float (sqrt(pod.vel_.x*pod.vel_.x+pod.vel_.y*pod.vel_.y));
+        float angle_tir=pod.angle_;
+        sf::Vector2f pos_tir=pod.pos_ + Vdirection;
+        laser_.setRotation(angle_tir);
+        laser_.setPosition(pos_tir);
+    }

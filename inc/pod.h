@@ -30,7 +30,11 @@ class Pod
     bool IA_;
     int champignon_;
 
-    //carapace
+    //attaque
+    //laser
+    int attaque_;
+    int timer_attaque_;
+    //stun
     int being_touched_;
     int timer_touched_;
 
@@ -38,7 +42,9 @@ class Pod
     int bouclier_;
     int timer_bouclier_;
     
+    
     friend class Game; //allows game to modify pod's private attributes
+
 };
 
 #endif
