@@ -49,7 +49,7 @@ int main()
     unsigned int nbPods = 4;
     std::vector<sf::Vector2f> positionPods = randomCP(nbPods);
     myGame.addPod(nbPods,positionPods);
-    myGame.pods_[0].IA_=false;
+    myGame.pods_[0].changeMode();
 
     //printf("%f   %f\n",positionPods[2].x,checkpointsPositions[2].x);
 
@@ -89,9 +89,9 @@ int main()
                 std::string score="";
                 for (unsigned int i=0; i<nbPods ;++i) {
                     if (i==0) {
-                        score += "JOUEUR : " +(std::to_string(myGame.pods_[i].lapCount_))+"\n";
+                        score += "JOUEUR : " +(std::to_string(myGame.pods_[i].getLap()))+"\n";
                     } else {
-                        score += "IA " + (std::to_string(i)) + " : " + (std::to_string(myGame.pods_[i].lapCount_))+"\n";
+                        score += "IA " + (std::to_string(i)) + " : " + (std::to_string(myGame.pods_[i].getLap()))+"\n";
                     }
                 }
                 myGame.text.setString(score);

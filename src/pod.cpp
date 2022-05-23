@@ -5,7 +5,7 @@
 
 
 Decision::Decision(sf::Vector2f target, float power) 
-{
+{   
     target_=target;
     power_=power;
 };
@@ -83,6 +83,7 @@ Decision Pod::getDecision(Pod &pod, std::vector<CheckPoint> otherCPs_, FinalChec
             pod.timer_attaque_=-1;
             pod.attaque_=0;
         }
+        
 
         
         //clavier
@@ -184,4 +185,16 @@ Decision Pod::getDecision(Pod &pod, std::vector<CheckPoint> otherCPs_, FinalChec
     
     //default
     //return Decision(sf::Vector2f(1000.f,1000.f),power);
+};
+
+void Pod::changeMode(){
+    IA_=!(IA_);
+};
+
+void Pod::addLap(){
+    lapCount_++;
+};
+
+int Pod::getLap(){
+    return lapCount_;
 };

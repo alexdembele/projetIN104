@@ -73,6 +73,7 @@ class Game : public sf::Drawable
     sf::Font font;
 
     void attaque(Pod pod);
+    bool isTouched(Pod pod);
 
 
 };

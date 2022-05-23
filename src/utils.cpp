@@ -91,8 +91,7 @@ std::vector<sf::Vector2f> randomCP(int nbCP) {
     return checkpointsPositions;
 }
 
-float angle(sf::Vector2f a, sf::Vector2f b)
-{
+float angle(sf::Vector2f a, sf::Vector2f b) {
     float dot=a.x * b.x + a.y *b.y;
     float norma=sqrt(a.x*a.x+a.y*a.y);
     float normb=sqrt(b.x*b.x+b.y*b.y);
@@ -106,6 +105,5 @@ float angle(sf::Vector2f a, sf::Vector2f b)
     {
         return -(180/M_PI)*acosf(dot/(norma*normb));
     }
-
 
 }
