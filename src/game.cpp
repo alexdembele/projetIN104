@@ -29,11 +29,14 @@ Game::Game(std::vector<sf::Vector2f> checkpointsPositions, int nbCP) : finalCP_(
     scaleToMinSize(backgroundSprite_,16000,9000);
 
     //laser
-    laser_=sf::RectangleShape(sf::Vector2f(500.f,70.f));
-    setOriginToCenter(laser_);
-    laser_.setFillColor(sf::Color::Green);
-    laser_.setOutlineThickness(10);
-    laser_.setOutlineColor(sf::Color::Black);
+    laser_.shape_=sf::RectangleShape(sf::Vector2f(500.f,70.f));
+    setOriginToCenter(laser_.shape_);
+    laser_.shape_.setFillColor(sf::Color::Green);
+    laser_.shape_.setOutlineThickness(10);
+    laser_.shape_.setOutlineColor(sf::Color::Black);
+    laser_.angle_=0.f;
+    laser_.pos_=sf::Vector2f(0.f,0.f);
+    laser_.vel_=sf::Vector2f(0.f,0.f);
 
     //affichage texte
     font.loadFromFile("../repository/Fredoka-Bold.ttf");
@@ -230,7 +233,12 @@ void Game::updatePhysics()
     if (pods_[0].timer_attaque_==0) {
         attaque(pods_[0]);
     }
-    //printf("%d\n", pods_[0].attaque_);
+    if (pods_[0].timer_attaque_>0 && pods_[0].timer_attaque_<=101) {
+        laser_.pos_=laser_.pos_+laser_.vel_;
+        laser_.shape_.setPosition(laser_.pos_);
+        printf("%f  %f\n",laser_.pos_.x,laser_.pos_.y);
+    }
+    printf("%d  %d\n", pods_[0].attaque_,pods_[0].timer_attaque_);
     //printf("%f;%f\n",pods_[0].pos_.x,pods_[0].pos_.y);
     
 
@@ -295,15 +303,15 @@ void Game::draw(sf::RenderTarget& target, sf::RenderStates states) const
     }
 
     if (pods_[0].attaque_==1) {
-        target.draw(laser_);
+        target.draw(laser_.shape_);
     }
 }
 
 
 void Game::attaque(Pod pod) {
-        sf::Vector2f Vdirection=pod.pos_+1000.f*pod.vel_/float (sqrt(pod.vel_.x*pod.vel_.x+pod.vel_.y*pod.vel_.y));
-        float angle_tir=pod.angle_;
-        sf::Vector2f pos_tir=pod.pos_ + Vdirection;
-        laser_.setRotation(angle_tir);
-        laser_.setPosition(pos_tir);
+        laser_.vel_=300.f*pod.vel_/float (sqrt(pod.vel_.x*pod.vel_.x+pod.vel_.y*pod.vel_.y));
+        laser_.pos_= pod.pos_ + 3.f*laser_.vel_;
+        laser_.angle_=pod.angle_;
+        laser_.shape_.setRotation(laser_.angle_);
+        laser_.shape_.setPosition(laser_.pos_);
     }

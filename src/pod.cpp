@@ -72,14 +72,14 @@ Decision Pod::getDecision(Pod &pod, std::vector<CheckPoint> otherCPs_, FinalChec
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::L) && pod.timer_attaque_<0 && pod.attaque_==0) {
             pod.timer_attaque_+=1;
             pod.attaque_=1;
-        } else if(pod.timer_attaque_>=0 && pod.timer_attaque_<=100 && pod.attaque_==1) {
+        } else if(pod.timer_attaque_>=0 && pod.timer_attaque_<=35 && pod.attaque_==1) {
             pod.timer_attaque_+=1;
-        } else if (pod.timer_attaque_==101 && pod.attaque_==1) {
+        } else if (pod.timer_attaque_==36 && pod.attaque_==1) {
             pod.attaque_=-1;
             pod.timer_attaque_=0;
-        } else if (pod.timer_attaque_>=0 && pod.timer_attaque_<=100 && pod.attaque_==-1) {
+        } else if (pod.timer_attaque_>=0 && pod.timer_attaque_<=2 && pod.attaque_==-1) {
             pod.timer_attaque_+=1;
-        } else if (pod.timer_attaque_==101 && pod.attaque_==-1) {
+        } else if (pod.timer_attaque_==3 && pod.attaque_==-1) {
             pod.timer_attaque_=-1;
             pod.attaque_=0;
         }

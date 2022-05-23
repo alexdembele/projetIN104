@@ -10,6 +10,7 @@
 #include "SFML/Graphics/Sprite.hpp"
 #include "SFML/Graphics/Text.hpp"
 #include "SFML/Graphics/Texture.hpp"
+#include "SFML/System/Vector2.hpp"
 #include "checkpoint.h"
 #include "pod.h"
 #include <math.h>
@@ -20,6 +21,13 @@ const float ROTA_MAX = M_PI/10.;
 const sf::Time PHYSICS_TIME_STEP = sf::milliseconds(100);
 const std::string IMAGES_PATH = "../repository/Images/";
 const std::string FONT_PATH = "../repository/";
+
+struct laser {
+    sf::RectangleShape shape_;
+    sf::Vector2f pos_;
+    float angle_;
+    sf::Vector2f vel_;
+};
 
 class Game : public sf::Drawable
 {
@@ -50,7 +58,7 @@ class Game : public sf::Drawable
     int nbCP_;
     int nbPods_;
 
-    sf::RectangleShape laser_;
+    struct laser laser_;
 
     sf::Texture tex_bouclier;
     sf::Sprite sp_bouclier;
