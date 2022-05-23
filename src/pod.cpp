@@ -119,7 +119,7 @@ Decision Pod::getDecision(Pod &pod, std::vector<CheckPoint> otherCPs_, FinalChec
 
 
         }
-        return Decision(pod.pos_+1000.f*pod.vel_/sqrt(pod.vel_.x*pod.vel_.x+pod.vel_.y*pod.vel_.y),0);
+        return Decision(pod.pos_+1000.f*pod.vel_/float (sqrt(pod.vel_.x*pod.vel_.x+pod.vel_.y*pod.vel_.y)),0);
     } else {
 
         //IA NORMALE
