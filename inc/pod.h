@@ -33,8 +33,9 @@ class Pod
     sf::Vector2f pos_, vel_; //position and velocity vectors
     float angle_; //angle in radians
     int nextCP_, lapCount_;
+    
     bool IA_;
-
+    bool autopilot_;
     //bonus
     int champignon_;
 
@@ -52,7 +53,9 @@ class Pod
     //asteroide
     int asteroide_pose_;
     int asteroide_timer_;
-
+    //tempete
+    int tempete_;
+    int tempete_timer_;
     
     
     

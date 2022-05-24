@@ -21,6 +21,7 @@ Pod::Pod(sf::Vector2f pos, float angle, sf::Vector2f vel)
     lapCount_=0;
     
     IA_=true;
+    autopilot_=false;
     
     champignon_=-1;
     
@@ -35,6 +36,9 @@ Pod::Pod(sf::Vector2f pos, float angle, sf::Vector2f vel)
 
     asteroide_pose_=0;
     asteroide_timer_=-1;
+
+    tempete_=0;
+    tempete_timer_=-1;
 };
 
 
@@ -44,7 +48,11 @@ Decision Pod::getDecision(Pod &pod, std::vector<CheckPoint> otherCPs_, FinalChec
 {   
     float power=60.f;
 
-    if (pod.IA_==false) {
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::I)) {
+        pod.autopilot_=!pod.autopilot_;
+    }
+
+    if (pod.IA_==false && autopilot_==false) {
         //asteroide
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::A) && pod.asteroide_timer_<0 && pod.asteroide_pose_==0) {
             pod.asteroide_timer_+=1;
@@ -72,6 +80,22 @@ Decision Pod::getDecision(Pod &pod, std::vector<CheckPoint> otherCPs_, FinalChec
         {
             power*=2;
             pod.champignon_+=1;
+        }
+
+        //tempete
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::T) && pod.tempete_timer_<0 && pod.tempete_==0) {
+            pod.tempete_timer_+=1;
+            pod.tempete_=1;
+        } else if(pod.tempete_timer_>=0 && pod.tempete_timer_<=100 && pod.tempete_==1) {
+            pod.tempete_timer_+=1;
+        } else if (pod.tempete_timer_==101 && pod.tempete_==1) {
+            pod.tempete_=-1;
+            pod.tempete_timer_=0;
+        } else if (pod.tempete_timer_>=0 && pod.tempete_timer_<=100 && pod.tempete_==-1) {
+            pod.tempete_timer_+=1;
+        } else if (pod.tempete_timer_==101 && pod.tempete_==-1) {
+            pod.tempete_timer_=-1;
+            pod.tempete_=0;
         }
         
         //bouclier

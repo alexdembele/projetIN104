@@ -79,6 +79,12 @@ class Game : public sf::Drawable
 
     sf::Text text;
     sf::Font font;
+    
+    sf::Text text_IA;
+    sf::Font font_IA;
+
+    sf::Texture tex_tempete;
+    sf::Sprite sp_tempete;
 
     void attaque(Pod pod);
     bool isTouched(Pod pod);

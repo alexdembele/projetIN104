@@ -44,6 +44,14 @@ Game::Game(std::vector<sf::Vector2f> checkpointsPositions, int nbCP) : finalCP_(
     text.setCharacterSize(400);
     text.setFillColor(sf::Color::Black);
 
+    //affichage IA
+    font_IA.loadFromFile("../repository/Fredoka-Bold.ttf");
+    text_IA.setFont(font_IA);
+    text_IA.setCharacterSize(400);
+    text_IA.setFillColor(sf::Color::Green);
+    text_IA.setString("IA");
+    text_IA.setPosition(sf::Vector2f(100.f,8500.f));
+
 
     //affichage bonus
     //champignon
@@ -52,6 +60,13 @@ Game::Game(std::vector<sf::Vector2f> checkpointsPositions, int nbCP) : finalCP_(
     setOriginToCenter(sp_champi);
     sp_champi.setPosition(sf::Vector2f(15500.f,500.f));
     scaleToMinSize(sp_champi,800,800);
+
+    //tempete
+    tex_tempete.loadFromFile("../repository/Images/tempete.png");
+    sp_tempete.setTexture(tex_tempete);
+    setOriginToCenter(sp_tempete);
+    sp_tempete.setPosition(sf::Vector2f(8000.f,4500.f));
+    scaleToMinSize(sp_tempete,16000,9000);
 
     //bouclier
     tex_bouclier.loadFromFile("../repository/Images/bouclier.png");
@@ -209,7 +224,7 @@ void Game::updatePhysics()
             }
             
         }
-        if (pods_[i].IA_==false) {   
+        if (pods_[i].IA_==false) { 
             float dist;
             if (pods_[i].nextCP_>=0) {
                 sf::Vector2f podCheckpoint= pods_[i].pos_ - otherCPs_[pods_[i].nextCP_].getPosition();
@@ -272,19 +287,19 @@ void Game::updatePhysics()
         laser_.shape_.setPosition(laser_.pos_);
         //printf("%f  %f\n",laser_.pos_.x,laser_.pos_.y);
     } else if (pods_[0].timer_attaque_>100) {
-        laser_.pos_=sf::Vector2f(0.f,0.f);
+        laser_.pos_=sf::Vector2f(-10000.f,-10000.f);
     }
 
     //pose de l'asteroide par le joueur
     if (pods_[0].asteroide_pose_==1 && pods_[0].asteroide_timer_==0) {
-        asteroide_.pos_=pods_[0].pos_;
+        asteroide_.pos_=pods_[0].pos_-900.f*pods_[0].vel_/norme(pods_[0].vel_);;
         asteroide_.sp_.setPosition(asteroide_.pos_);
     } else if (pods_[0].asteroide_pose_==-1 && pods_[0].asteroide_timer_==0) {
-        asteroide_.pos_=sf::Vector2f(0.f,0.f);
+        asteroide_.pos_=sf::Vector2f(-10000.f,-10000.f);
         asteroide_.sp_.setPosition(asteroide_.pos_);
     }
-
-
+    //printf("%d \n",pods_[0].tempete_);
+    //printf("%d    %d\n", pods_[0].IA_, pods_[0].autopilot_);
     //printf("%d  %d\n", pods_[0].attaque_,pods_[0].timer_attaque_);
     //printf("%f;%f\n",pods_[0].pos_.x,pods_[0].pos_.y);
     
@@ -357,6 +372,14 @@ void Game::draw(sf::RenderTarget& target, sf::RenderStates states) const
 
     if (pods_[0].asteroide_pose_==1) {
         target.draw(asteroide_.sp_);
+    }
+
+    if (pods_[0].autopilot_) {
+        target.draw(text_IA);
+    }
+
+    if (pods_[0].tempete_==1) {
+        target.draw(sp_tempete);
     }
 }
 
