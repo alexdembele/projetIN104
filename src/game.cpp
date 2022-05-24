@@ -7,8 +7,6 @@
 #include <SFML/Graphics/CircleShape.hpp>
 #include <iostream>
 #include <math.h>
-#include "../inc/asteroide.h"
-
 
 Game::Game(std::vector<sf::Vector2f> checkpointsPositions, int nbCP) : finalCP_(checkpointsPositions[0])
 {   
@@ -48,19 +46,21 @@ Game::Game(std::vector<sf::Vector2f> checkpointsPositions, int nbCP) : finalCP_(
 
 
     //affichage bonus
+    //champignon
     tex_champi.loadFromFile("../repository/Images/champignon.png");
     sp_champi.setTexture(tex_champi);
     setOriginToCenter(sp_champi);
     sp_champi.setPosition(sf::Vector2f(15500.f,500.f));
     scaleToMinSize(sp_champi,800,800);
 
+    //bouclier
     tex_bouclier.loadFromFile("../repository/Images/bouclier.png");
     sp_bouclier.setTexture(tex_bouclier);
     setOriginToCenter(sp_bouclier);
     sp_bouclier.setPosition(sf::Vector2f(14500.f,500.f));
     scaleToMinSize(sp_bouclier,800,800);
 
-
+    //bouclier used
     tex_bouclier_used.loadFromFile("../repository/Images/bouclier_used.png");
     sp_bouclier_used.setTexture(tex_bouclier_used);
     setOriginToCenter(sp_bouclier_used);
@@ -124,7 +124,8 @@ void Game::updatePhysics()
 
         if (decalageAngle>=180) {
             decalageAngle-=360;
-        } else if (decalageAngle<=-180) {
+        }
+        if (decalageAngle<=-180) {
             decalageAngle+=360;
         }
 
@@ -150,7 +151,7 @@ void Game::updatePhysics()
             sf::Vector2f target_intermediaire;
             target_intermediaire=sf::Vector2f (Nx,Ny);
             
-            float norme_vintermediaire= sqrt(target_intermediaire.x*target_intermediaire.x+target_intermediaire.y*target_intermediaire.y);
+            float norme_vintermediaire=norme(target_intermediaire);
             
             //calcul vitesse
             pods_[i].vel_=0.85f*(pods_[i].vel_+decision.power_*(target_intermediaire/norme_vintermediaire));
@@ -183,10 +184,10 @@ void Game::updatePhysics()
 
         } else {
           
-            float norme = sqrt(vecteur_vers_target.x*vecteur_vers_target.x+vecteur_vers_target.y*vecteur_vers_target.y);
+            float norm = norme(vecteur_vers_target);
             
             //calcul vitesse
-            pods_[i].vel_=0.85f*(pods_[i].vel_+decision.power_*(vecteur_vers_target/norme));
+            pods_[i].vel_=0.85f*(pods_[i].vel_+decision.power_*(vecteur_vers_target/norm));
             
             //calcul position
             pods_[i].pos_=pods_[i].pos_+pods_[i].vel_;
@@ -196,7 +197,7 @@ void Game::updatePhysics()
 
             
             //test si sur checkpoint et si lapcount
-            if (norme < 300.f  && pods_[i].IA_==true) {
+            if (norm < 300.f  && pods_[i].IA_==true) {
                 if (pods_[i].nextCP_<nbCP_-2) {
                     pods_[i].nextCP_=pods_[i].nextCP_+1;
                 } else if (pods_[i].nextCP_==nbCP_-2) {
@@ -212,10 +213,10 @@ void Game::updatePhysics()
             float dist;
             if (pods_[i].nextCP_>=0) {
                 sf::Vector2f podCheckpoint= pods_[i].pos_ - otherCPs_[pods_[i].nextCP_].getPosition();
-                dist=sqrt(podCheckpoint.x*podCheckpoint.x+podCheckpoint.x*podCheckpoint.x);
+                dist=norme(podCheckpoint);
             } else {
                 sf::Vector2f podCheckpoint= pods_[i].pos_ - finalCP_.getPosition();
-                dist=sqrt(podCheckpoint.x*podCheckpoint.x+podCheckpoint.x*podCheckpoint.x);
+                dist=norme(podCheckpoint);
             }
 
             if (dist < 300) {
@@ -236,24 +237,28 @@ void Game::updatePhysics()
             //printf("%d\n",pods_[i].nextCP_);
         }
 
-        //istouched
-        if (isTouched(pods_[i]) && pods_[i].being_touched_==0) {
-            pods_[i].timer_touched_+=1;
-            pods_[i].being_touched_=1;
-            pods_[i].vel_=sf::Vector2f(0.0001f,0.0001f);
-        } else if (pods_[i].timer_touched_>=0 && pods_[i].timer_touched_<=50 && pods_[i].being_touched_==1) {
-            pods_[i].timer_touched_+=1;
-            pods_[i].vel_=sf::Vector2f(0.0001f,0.0001f);
-        } else if (pods_[i].timer_touched_==51 && pods_[i].being_touched_==1) {
-            pods_[i].timer_touched_=0;
-            pods_[i].being_touched_=-1;
-            //pods_[i].vel_=sf::Vector2f(10.f,10.f);
-        } else if (pods_[i].timer_touched_>=0 && pods_[i].timer_touched_<=50 && pods_[i].being_touched_==-1) {
-            pods_[i].timer_touched_+=1;
-        } else if (pods_[i].timer_touched_==51 && pods_[i].being_touched_==-1) {
-            pods_[i].timer_touched_=-1;
-            pods_[i].being_touched_=0;
+        //istouched by laser or asteroid
+        if (pods_[i].bouclier_==0) {
+            if (isTouched(pods_[i]) && pods_[i].being_touched_==0) {
+                pods_[i].timer_touched_+=1;
+                pods_[i].being_touched_=1;
+                pods_[i].vel_=sf::Vector2f(0.0001f,0.0001f);
+            } else if (pods_[i].timer_touched_>=0 && pods_[i].timer_touched_<=50 && pods_[i].being_touched_==1) {
+                pods_[i].timer_touched_+=1;
+                pods_[i].vel_=sf::Vector2f(0.0001f,0.0001f);
+            } else if (pods_[i].timer_touched_==51 && pods_[i].being_touched_==1) {
+                pods_[i].timer_touched_=0;
+                pods_[i].being_touched_=-1;
+                //pods_[i].vel_=sf::Vector2f(10.f,10.f);
+            } else if (pods_[i].timer_touched_>=0 && pods_[i].timer_touched_<=50 && pods_[i].being_touched_==-1) {
+                pods_[i].timer_touched_+=1;
+            } else if (pods_[i].timer_touched_==51 && pods_[i].being_touched_==-1) {
+                pods_[i].timer_touched_=-1;
+                pods_[i].being_touched_=0;
+            }
         }
+
+
         //printf("%d : %d   %f  %f\n",i,pods_[i].timer_touched_,pods_[i].vel_.x,pods_[i].vel_.y);
         //printf("%f;%f    %f;%f\n",pod_pos.x,pod_pos.y,pod_target.x+pod_pos.x,pod_target.y+pod_pos.y);
         //printf("physics:%f\n",pods_[i].angle_);
@@ -278,6 +283,7 @@ void Game::updatePhysics()
         asteroide_.pos_=sf::Vector2f(0.f,0.f);
         asteroide_.sp_.setPosition(asteroide_.pos_);
     }
+
 
     //printf("%d  %d\n", pods_[0].attaque_,pods_[0].timer_attaque_);
     //printf("%f;%f\n",pods_[0].pos_.x,pods_[0].pos_.y);
@@ -356,7 +362,7 @@ void Game::draw(sf::RenderTarget& target, sf::RenderStates states) const
 
 
 void Game::attaque(Pod pod) {
-    laser_.vel_=300.f*pod.vel_/float (sqrt(pod.vel_.x*pod.vel_.x+pod.vel_.y*pod.vel_.y));
+    laser_.vel_=300.f*pod.vel_/norme(pod.vel_);
     laser_.pos_= pod.pos_ + 3.f*laser_.vel_;
     //laser_.angle_=angle(laser_.vel_,sf::Vector2f(0.f,1.f));
     laser_.angle_=pod.angle_;
@@ -365,9 +371,11 @@ void Game::attaque(Pod pod) {
 }
 
 bool Game::isTouched(Pod pod) {
-    sf::Vector2f vect = laser_.pos_-pod.pos_;
-    float dist=sqrt(vect.x*vect.x+vect.y*vect.y);
-    if (dist<300) {
+    sf::Vector2f vect_asteroid=asteroide_.pos_-pod.pos_;
+    sf::Vector2f vect_laser = laser_.pos_-pod.pos_;
+    float dist_laser=norme(vect_laser);
+    float dist_asteroid=norme(vect_asteroid);
+    if (dist_laser<300 || dist_asteroid<600) {
         return true;
     }
     return false;

@@ -1,5 +1,6 @@
 #include "../inc/pod.h"
 #include "../inc/game.h"
+#include "../inc/utils.h"
 #include <SFML/System/Vector2.hpp>
 
 
@@ -41,16 +42,16 @@ Pod::Pod(sf::Vector2f pos, float angle, sf::Vector2f vel)
 
 Decision Pod::getDecision(Pod &pod, std::vector<CheckPoint> otherCPs_, FinalCheckPoint finalCP_) const
 {   
-    float power=30.f;
+    float power=60.f;
 
     if (pod.IA_==false) {
         //asteroide
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::A) && pod.asteroide_timer_<0 && pod.asteroide_pose_==0) {
             pod.asteroide_timer_+=1;
             pod.asteroide_pose_=1;
-        } else if(pod.asteroide_timer_>=0 && pod.asteroide_timer_<=100 && pod.asteroide_pose_==1) {
+        } else if(pod.asteroide_timer_>=0 && pod.asteroide_timer_<=300 && pod.asteroide_pose_==1) {
             pod.asteroide_timer_+=1;
-        } else if (pod.asteroide_timer_==101 && pod.asteroide_pose_==1) {
+        } else if (pod.asteroide_timer_==301 && pod.asteroide_pose_==1) {
             pod.asteroide_pose_=-1;
             pod.asteroide_timer_=0;
         } else if (pod.asteroide_timer_>=0 && pod.asteroide_timer_<=100 && pod.asteroide_pose_==-1) {
@@ -185,7 +186,7 @@ Decision Pod::getDecision(Pod &pod, std::vector<CheckPoint> otherCPs_, FinalChec
 
 
         }
-        return Decision(pod.pos_+1000.f*pod.vel_/float (sqrt(pod.vel_.x*pod.vel_.x+pod.vel_.y*pod.vel_.y)),0);
+        return Decision(pod.pos_+1000.f*pod.vel_/norme(pod.vel_),0);
     } else {
 
         //IA NORMALE

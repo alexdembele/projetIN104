@@ -1,6 +1,7 @@
 #ifndef INC_UTILS_H
 #define INC_UTILS_H
 
+#include "SFML/System/Vector2.hpp"
 #include <SFML/Graphics.hpp>
 #include <stdlib.h>
 #include <time.h>
@@ -17,6 +18,8 @@ void setTextCenterPosition(sf::Text &txt, sf::Vector2f center);
 
 bool check(float x, float y, float *listex, float *listey, int size);
 std::vector<sf::Vector2f> randomCP(int nbCP);
+float norme(sf::Vector2f vect);
 float angle(sf::Vector2f a, sf::Vector2f b);
+
 
 #endif

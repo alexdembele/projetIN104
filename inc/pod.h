@@ -3,7 +3,9 @@
 
 #include <SFML/System.hpp>
 #include <cmath>
-#include "checkpoint.h"
+#include "../inc/checkpoint.h"
+#include "../inc/utils.h"
+#include <SFML/System/Vector2.hpp>
 
 class Game;
 
