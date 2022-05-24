@@ -39,6 +39,9 @@ Pod::Pod(sf::Vector2f pos, float angle, sf::Vector2f vel)
 
     tempete_=0;
     tempete_timer_=-1;
+
+    missile_=0;
+    missile_timer_=-1;
 };
 
 
@@ -46,7 +49,7 @@ Pod::Pod(sf::Vector2f pos, float angle, sf::Vector2f vel)
 
 Decision Pod::getDecision(Pod &pod, std::vector<CheckPoint> otherCPs_, FinalCheckPoint finalCP_) const
 {   
-    float power=60.f;
+    float power=50.f;
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::I)) {
         pod.autopilot_=!pod.autopilot_;
@@ -69,7 +72,21 @@ Decision Pod::getDecision(Pod &pod, std::vector<CheckPoint> otherCPs_, FinalChec
             pod.asteroide_pose_=0;
         }
 
-
+        //missile
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::M) && pod.missile_timer_<0 && pod.missile_==0) {
+            pod.missile_timer_+=1;
+            pod.missile_=1;
+        } else if(pod.missile_timer_>=0 && pod.missile_timer_<=50 && pod.missile_==1) {
+            pod.missile_timer_+=1;
+        } else if (pod.missile_timer_==51 && pod.missile_==1) {
+            pod.missile_=-1;
+            pod.missile_timer_=0;
+        } else if (pod.missile_timer_>=0 && pod.missile_timer_<=100 && pod.missile_==-1) {
+            pod.missile_timer_+=1;
+        } else if (pod.missile_timer_==101 && pod.missile_==-1) {
+            pod.missile_timer_=-1;
+            pod.missile_=0;
+        }
 
         //champignon
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::C) && pod.champignon_<0)

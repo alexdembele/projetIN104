@@ -88,6 +88,17 @@ Game::Game(std::vector<sf::Vector2f> checkpointsPositions, int nbCP) : finalCP_(
     setOriginToCenter(asteroide_.sp_);
     asteroide_.sp_.setPosition(sf::Vector2f(0.f,0.f));
     scaleToMinSize(asteroide_.sp_,800,800);
+
+    //missile
+    missile_.texture_.loadFromFile("../repository/Images/missile.png");
+    missile_.sprite_.setTexture(missile_.texture_);
+    setOriginToCenter(missile_.sprite_);
+    missile_.sprite_.setPosition(sf::Vector2f(0.f,0.f));
+    scaleToMinSize(missile_.sprite_,800,800);
+    missile_.angle_=0.f;
+    missile_.pos_=sf::Vector2f(0.f,0.f);
+    missile_.vel_=sf::Vector2f(0.f,0.f);
+    missile_.cible_=0;
     
 }
 
@@ -161,7 +172,7 @@ void Game::updatePhysics()
             }
             
             float Nx=cos(decalage_intermediaire)*vecteur_vers_target.x-sin(decalage_intermediaire)*vecteur_vers_target.y; 
-            float Ny=sin(decalage_intermediaire)*vecteur_vers_target.x+cos(decalageAngle)*vecteur_vers_target.y;
+            float Ny=sin(decalage_intermediaire)*vecteur_vers_target.x+cos(decalage_intermediaire)*vecteur_vers_target.y;
             
             sf::Vector2f target_intermediaire;
             target_intermediaire=sf::Vector2f (Nx,Ny);
@@ -252,7 +263,7 @@ void Game::updatePhysics()
             //printf("%d\n",pods_[i].nextCP_);
         }
 
-        //istouched by laser or asteroid
+        //istouched by laser or asteroid or missile
         if (pods_[i].bouclier_==0) {
             if (isTouched(pods_[i]) && pods_[i].being_touched_==0) {
                 pods_[i].timer_touched_+=1;
@@ -281,13 +292,14 @@ void Game::updatePhysics()
 
     //attaque du pod du joueur
     if (pods_[0].timer_attaque_==0) {
-        attaque(pods_[0]);
+        attaque_laser(pods_[0]);
     } else if (pods_[0].timer_attaque_>0 && pods_[0].timer_attaque_<=100) {
         laser_.pos_=laser_.pos_+laser_.vel_;
         laser_.shape_.setPosition(laser_.pos_);
         //printf("%f  %f\n",laser_.pos_.x,laser_.pos_.y);
     } else if (pods_[0].timer_attaque_>100) {
         laser_.pos_=sf::Vector2f(-10000.f,-10000.f);
+        laser_.shape_.setPosition(laser_.pos_);
     }
 
     //pose de l'asteroide par le joueur
@@ -298,6 +310,83 @@ void Game::updatePhysics()
         asteroide_.pos_=sf::Vector2f(-10000.f,-10000.f);
         asteroide_.sp_.setPosition(asteroide_.pos_);
     }
+
+
+    //pose du missile 
+    if (pods_[0].missile_timer_==0) {
+        attaque_missile(pods_,nbPods_);
+    } else if (pods_[0].missile_timer_>0 && pods_[0].missile_timer_<=100) {
+        sf::Vector2f missile_target = pods_[missile_.cible_].pos_;
+        sf::Vector2f missile_pos = missile_.pos_;
+        sf::Vector2f vecteur_vers_target_missile = missile_target-missile_pos;
+        float decalageAngle_missile = angle(sf::Vector2f(0.00000001f,0.f),vecteur_vers_target_missile)-missile_.angle_;
+
+        if (decalageAngle_missile>=180) {
+            decalageAngle_missile-=360;
+        }
+        if (decalageAngle_missile<=-180) {
+            decalageAngle_missile+=360;
+        }
+        /*
+        //si le decalageAngle est superieur a pi/10 on fait un decalage de pi/10
+        if(abs(decalageAngle_missile)>36.f)
+        {   
+            
+            //calcul du vecteur vers le target intermediaire
+            //vecteur vers la target intermediaire dans le repere du pod
+            float decalage_intermediaire_missile=0.f;
+            //on check si le decalage est vers le haut ou le bas
+            if (decalageAngle_missile>0) {
+                decalage_intermediaire_missile=(-decalageAngle_missile+36)*(M_PI/180.f);
+            } else if (decalageAngle_missile<=0) {
+                decalage_intermediaire_missile=(-decalageAngle_missile-36)*(M_PI/180.f);
+            }
+            
+            float Nx=cos(decalage_intermediaire_missile)*vecteur_vers_target_missile.x-sin(decalage_intermediaire_missile)*vecteur_vers_target_missile.y; 
+            float Ny=sin(decalage_intermediaire_missile)*vecteur_vers_target_missile.x+cos(decalage_intermediaire_missile)*vecteur_vers_target_missile.y;
+            
+            sf::Vector2f target_intermediaire_missile;
+            target_intermediaire_missile=sf::Vector2f (Nx,Ny);
+            
+            float norme_vintermediaire_missile=norme(target_intermediaire_missile);
+            
+            //calcul vitesse
+            missile_.vel_=0.85f*(missile_.vel_+120.f*(target_intermediaire_missile/norme_vintermediaire_missile));
+            
+            //calcul position
+            missile_.pos_=missile_.pos_+missile_.vel_;
+
+            //calcul angle
+            if (decalageAngle_missile>0) {
+                missile_.angle_=missile_.angle_+18.f;
+            } else if (decalageAngle_missile<=0) {
+                missile_.angle_=missile_.angle_-18.f;
+            }
+
+        } else {
+        */
+            float norm_missile = norme(vecteur_vers_target_missile);
+            
+            //calcul vitesse
+            missile_.vel_=0.85f*(missile_.vel_+120.f*(vecteur_vers_target_missile/norm_missile));
+            
+            //calcul position
+            missile_.pos_=missile_.pos_+missile_.vel_;
+
+            //calcul angle
+            missile_.angle_=missile_.angle_+decalageAngle_missile;
+
+        //}
+        missile_.sprite_.setPosition(missile_.pos_);
+        missile_.sprite_.setRotation(missile_.angle_);
+        if (norm_missile<300) {
+            pods_[0].missile_=101;
+        }
+    } else if (pods_[0].missile_timer_>100) {
+        missile_.pos_=sf::Vector2f(-10000.f,-10000.f);
+        missile_.sprite_.setPosition(missile_.pos_);
+    }
+
     //printf("%d \n",pods_[0].tempete_);
     //printf("%d    %d\n", pods_[0].IA_, pods_[0].autopilot_);
     //printf("%d  %d\n", pods_[0].attaque_,pods_[0].timer_attaque_);
@@ -381,10 +470,14 @@ void Game::draw(sf::RenderTarget& target, sf::RenderStates states) const
     if (pods_[0].tempete_==1) {
         target.draw(sp_tempete);
     }
+
+    if (pods_[0].missile_==1) {
+        target.draw(missile_.sprite_);
+    }
 }
 
 
-void Game::attaque(Pod pod) {
+void Game::attaque_laser(Pod pod) {
     laser_.vel_=300.f*pod.vel_/norme(pod.vel_);
     laser_.pos_= pod.pos_ + 3.f*laser_.vel_;
     //laser_.angle_=angle(laser_.vel_,sf::Vector2f(0.f,1.f));
@@ -393,12 +486,32 @@ void Game::attaque(Pod pod) {
     laser_.shape_.setPosition(laser_.pos_);
 }
 
+void Game::attaque_missile(std::vector<Pod> pods_,int nbPods_) {
+    float dist=norme(pods_[0].pos_-pods_[1].pos_);
+    missile_.cible_=1;
+    for (int i=2;i<nbPods_;++i) {
+        float dist1=norme(pods_[0].pos_-pods_[1].pos_);
+        if (dist1<dist) {
+            dist=dist1;
+            missile_.cible_=i;
+        }
+    }
+    
+    missile_.vel_=300.f*pods_[0].vel_/norme(pods_[0].vel_);
+    missile_.pos_= pods_[0].pos_ + 3.f*missile_.vel_;
+    missile_.angle_=pods_[0].angle_;
+    missile_.sprite_.setRotation(missile_.angle_);
+    missile_.sprite_.setPosition(missile_.pos_);
+}
+
 bool Game::isTouched(Pod pod) {
     sf::Vector2f vect_asteroid=asteroide_.pos_-pod.pos_;
     sf::Vector2f vect_laser = laser_.pos_-pod.pos_;
+    sf::Vector2f vect_missile = missile_.pos_-pod.pos_;
     float dist_laser=norme(vect_laser);
     float dist_asteroid=norme(vect_asteroid);
-    if (dist_laser<300 || dist_asteroid<600) {
+    float dist_missile=norme(vect_missile);
+    if (dist_laser<300 || dist_asteroid<600 || dist_missile<300) {
         return true;
     }
     return false;

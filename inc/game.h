@@ -30,6 +30,15 @@ struct Asteroide {
 
 };
 
+struct missile {
+    sf::Texture texture_;
+    sf::Sprite sprite_;
+    sf::Vector2f pos_;
+    float angle_;
+    sf::Vector2f vel_;
+    int cible_;
+};
+
 struct laser {
     sf::RectangleShape shape_;
     sf::Vector2f pos_;
@@ -86,10 +95,13 @@ class Game : public sf::Drawable
     sf::Texture tex_tempete;
     sf::Sprite sp_tempete;
 
-    void attaque(Pod pod);
+    void attaque_laser(Pod pod);
+    void attaque_missile(std::vector<Pod> pods_, int nbPods_);
     bool isTouched(Pod pod);
 
     Asteroide asteroide_;
+
+    missile missile_;
 
 
 };
