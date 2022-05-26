@@ -14,7 +14,6 @@
 #include "checkpoint.h"
 #include "pod.h"
 #include <math.h>
-#include "../inc/asteroide.h"
 
 const unsigned int NUMBER_OF_LAPS = 3;
 const float FRICTION_COEFF = 0.85;
@@ -22,6 +21,23 @@ const float ROTA_MAX = M_PI/10.;
 const sf::Time PHYSICS_TIME_STEP = sf::milliseconds(100);
 const std::string IMAGES_PATH = "../repository/Images/";
 const std::string FONT_PATH = "../repository/";
+
+
+struct Asteroide {
+    sf::Texture tex_;
+    sf::Sprite sp_;
+    sf::Vector2f pos_;
+
+};
+
+struct missile {
+    sf::Texture texture_;
+    sf::Sprite sprite_;
+    sf::Vector2f pos_;
+    float angle_;
+    sf::Vector2f vel_;
+    int cible_;
+};
 
 struct laser {
     sf::RectangleShape shape_;
@@ -72,11 +88,20 @@ class Game : public sf::Drawable
 
     sf::Text text;
     sf::Font font;
+    
+    sf::Text text_IA;
+    sf::Font font_IA;
 
-    void attaque(Pod pod);
+    sf::Texture tex_tempete;
+    sf::Sprite sp_tempete;
+
+    void attaque_laser(Pod pod);
+    void attaque_missile(std::vector<Pod> pods_, int nbPods_);
     bool isTouched(Pod pod);
 
     Asteroide asteroide_;
+
+    missile missile_;
 
 
 };

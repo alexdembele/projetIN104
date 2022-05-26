@@ -1,4 +1,5 @@
 #include "../inc/utils.h"
+#include "SFML/System/Vector2.hpp"
 #include <cmath>
 #include <stdlib.h>
 #include <time.h>
@@ -91,10 +92,14 @@ std::vector<sf::Vector2f> randomCP(int nbCP) {
     return checkpointsPositions;
 }
 
+float norme(sf::Vector2f vect) {
+    return sqrt(vect.x*vect.x+vect.y*vect.y);
+}
+
 float angle(sf::Vector2f a, sf::Vector2f b) {
     float dot=a.x * b.x + a.y *b.y;
-    float norma=sqrt(a.x*a.x+a.y*a.y);
-    float normb=sqrt(b.x*b.x+b.y*b.y);
+    float norma=norme(a);
+    float normb=norme(b);
     float prodVectoriel=(a.x*b.y-a.y*b.x);
   
     if (prodVectoriel>=0)
@@ -107,3 +112,4 @@ float angle(sf::Vector2f a, sf::Vector2f b) {
     }
 
 }
+

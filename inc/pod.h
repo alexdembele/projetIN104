@@ -3,7 +3,9 @@
 
 #include <SFML/System.hpp>
 #include <cmath>
-#include "checkpoint.h"
+#include "../inc/checkpoint.h"
+#include "../inc/utils.h"
+#include <SFML/System/Vector2.hpp>
 
 class Game;
 
@@ -31,8 +33,9 @@ class Pod
     sf::Vector2f pos_, vel_; //position and velocity vectors
     float angle_; //angle in radians
     int nextCP_, lapCount_;
+    
     bool IA_;
-
+    bool autopilot_;
     //bonus
     int champignon_;
 
@@ -50,7 +53,12 @@ class Pod
     //asteroide
     int asteroide_pose_;
     int asteroide_timer_;
+    //tempete
+    int tempete_;
+    int tempete_timer_;
 
+    int missile_;
+    int missile_timer_;
     
     
     

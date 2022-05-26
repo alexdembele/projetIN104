@@ -1,5 +1,6 @@
 #include "../inc/pod.h"
 #include "../inc/game.h"
+#include "../inc/utils.h"
 #include <SFML/System/Vector2.hpp>
 
 
@@ -20,6 +21,7 @@ Pod::Pod(sf::Vector2f pos, float angle, sf::Vector2f vel)
     lapCount_=0;
     
     IA_=true;
+    autopilot_=false;
     
     champignon_=-1;
     
@@ -34,6 +36,12 @@ Pod::Pod(sf::Vector2f pos, float angle, sf::Vector2f vel)
 
     asteroide_pose_=0;
     asteroide_timer_=-1;
+
+    tempete_=0;
+    tempete_timer_=-1;
+
+    missile_=0;
+    missile_timer_=-1;
 };
 
 
@@ -41,16 +49,20 @@ Pod::Pod(sf::Vector2f pos, float angle, sf::Vector2f vel)
 
 Decision Pod::getDecision(Pod &pod, std::vector<CheckPoint> otherCPs_, FinalCheckPoint finalCP_) const
 {   
-    float power=30.f;
+    float power=50.f;
 
-    if (pod.IA_==false) {
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::I)) {
+        pod.autopilot_=!pod.autopilot_;
+    }
+
+    if (pod.IA_==false && autopilot_==false) {
         //asteroide
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::A) && pod.asteroide_timer_<0 && pod.asteroide_pose_==0) {
             pod.asteroide_timer_+=1;
             pod.asteroide_pose_=1;
-        } else if(pod.asteroide_timer_>=0 && pod.asteroide_timer_<=100 && pod.asteroide_pose_==1) {
+        } else if(pod.asteroide_timer_>=0 && pod.asteroide_timer_<=300 && pod.asteroide_pose_==1) {
             pod.asteroide_timer_+=1;
-        } else if (pod.asteroide_timer_==101 && pod.asteroide_pose_==1) {
+        } else if (pod.asteroide_timer_==301 && pod.asteroide_pose_==1) {
             pod.asteroide_pose_=-1;
             pod.asteroide_timer_=0;
         } else if (pod.asteroide_timer_>=0 && pod.asteroide_timer_<=100 && pod.asteroide_pose_==-1) {
@@ -60,7 +72,21 @@ Decision Pod::getDecision(Pod &pod, std::vector<CheckPoint> otherCPs_, FinalChec
             pod.asteroide_pose_=0;
         }
 
-
+        //missile
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::M) && pod.missile_timer_<0 && pod.missile_==0) {
+            pod.missile_timer_+=1;
+            pod.missile_=1;
+        } else if(pod.missile_timer_>=0 && pod.missile_timer_<=50 && pod.missile_==1) {
+            pod.missile_timer_+=1;
+        } else if (pod.missile_timer_==51 && pod.missile_==1) {
+            pod.missile_=-1;
+            pod.missile_timer_=0;
+        } else if (pod.missile_timer_>=0 && pod.missile_timer_<=100 && pod.missile_==-1) {
+            pod.missile_timer_+=1;
+        } else if (pod.missile_timer_==101 && pod.missile_==-1) {
+            pod.missile_timer_=-1;
+            pod.missile_=0;
+        }
 
         //champignon
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::C) && pod.champignon_<0)
@@ -71,6 +97,22 @@ Decision Pod::getDecision(Pod &pod, std::vector<CheckPoint> otherCPs_, FinalChec
         {
             power*=2;
             pod.champignon_+=1;
+        }
+
+        //tempete
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::T) && pod.tempete_timer_<0 && pod.tempete_==0) {
+            pod.tempete_timer_+=1;
+            pod.tempete_=1;
+        } else if(pod.tempete_timer_>=0 && pod.tempete_timer_<=100 && pod.tempete_==1) {
+            pod.tempete_timer_+=1;
+        } else if (pod.tempete_timer_==101 && pod.tempete_==1) {
+            pod.tempete_=-1;
+            pod.tempete_timer_=0;
+        } else if (pod.tempete_timer_>=0 && pod.tempete_timer_<=100 && pod.tempete_==-1) {
+            pod.tempete_timer_+=1;
+        } else if (pod.tempete_timer_==101 && pod.tempete_==-1) {
+            pod.tempete_timer_=-1;
+            pod.tempete_=0;
         }
         
         //bouclier
@@ -185,7 +227,7 @@ Decision Pod::getDecision(Pod &pod, std::vector<CheckPoint> otherCPs_, FinalChec
 
 
         }
-        return Decision(pod.pos_+1000.f*pod.vel_/float (sqrt(pod.vel_.x*pod.vel_.x+pod.vel_.y*pod.vel_.y)),0);
+        return Decision(pod.pos_+1000.f*pod.vel_/norme(pod.vel_),0);
     } else {
 
         //IA NORMALE
