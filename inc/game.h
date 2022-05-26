@@ -114,13 +114,7 @@ class Game : public sf::Drawable
     sf::Sound plopAudio;
     sf::SoundBuffer plopBuffer;
 
-    sf::Sound etoileAudio;
-    sf::SoundBuffer etoileBuffer;
-
     
-
-    sf::Sound windAudio;
-    sf::SoundBuffer windBuffer;
 
     sf::Sound missileHitAudio;
     sf::SoundBuffer missileHitBuffer;
