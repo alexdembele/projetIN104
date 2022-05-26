@@ -355,62 +355,24 @@ void Game::updatePhysics()
         if (decalageAngle_missile<=-180) {
             decalageAngle_missile+=360;
         }
-        /*
-        //si le decalageAngle est superieur a pi/10 on fait un decalage de pi/10
-        if(abs(decalageAngle_missile)>36.f)
-        {   
-            
-            //calcul du vecteur vers le target intermediaire
-            //vecteur vers la target intermediaire dans le repere du pod
-            float decalage_intermediaire_missile=0.f;
-            //on check si le decalage est vers le haut ou le bas
-            if (decalageAngle_missile>0) {
-                decalage_intermediaire_missile=(-decalageAngle_missile+36)*(M_PI/180.f);
-            } else if (decalageAngle_missile<=0) {
-                decalage_intermediaire_missile=(-decalageAngle_missile-36)*(M_PI/180.f);
-            }
-            
-            float Nx=cos(decalage_intermediaire_missile)*vecteur_vers_target_missile.x-sin(decalage_intermediaire_missile)*vecteur_vers_target_missile.y; 
-            float Ny=sin(decalage_intermediaire_missile)*vecteur_vers_target_missile.x+cos(decalage_intermediaire_missile)*vecteur_vers_target_missile.y;
-            
-            sf::Vector2f target_intermediaire_missile;
-            target_intermediaire_missile=sf::Vector2f (Nx,Ny);
-            
-            float norme_vintermediaire_missile=norme(target_intermediaire_missile);
-            
-            //calcul vitesse
-            missile_.vel_=0.85f*(missile_.vel_+120.f*(target_intermediaire_missile/norme_vintermediaire_missile));
-            
-            //calcul position
-            missile_.pos_=missile_.pos_+missile_.vel_;
+        float norm_missile = norme(vecteur_vers_target_missile);
+        
+        //calcul vitesse
+        missile_.vel_=0.85f*(missile_.vel_+120.f*(vecteur_vers_target_missile/norm_missile));
+        
+        //calcul position
+        missile_.pos_=missile_.pos_+missile_.vel_;
 
-            //calcul angle
-            if (decalageAngle_missile>0) {
-                missile_.angle_=missile_.angle_+18.f;
-            } else if (decalageAngle_missile<=0) {
-                missile_.angle_=missile_.angle_-18.f;
-            }
+        //calcul angle
+        missile_.angle_=missile_.angle_+decalageAngle_missile;
 
-        } else {
-        */
-            float norm_missile = norme(vecteur_vers_target_missile);
-            
-            //calcul vitesse
-            missile_.vel_=0.85f*(missile_.vel_+120.f*(vecteur_vers_target_missile/norm_missile));
-            
-            //calcul position
-            missile_.pos_=missile_.pos_+missile_.vel_;
-
-            //calcul angle
-            missile_.angle_=missile_.angle_+decalageAngle_missile;
-
-        //}
         missile_.sprite_.setPosition(missile_.pos_);
         missile_.sprite_.setRotation(missile_.angle_);
         if (norm_missile<300) {
             pods_[0].missile_timer_=51;
         }
-    } else if (pods_[0].missile_timer_>50 && pods_[0].missile_==1) {
+    }
+    if (pods_[0].missile_timer_>50 && pods_[0].missile_==1) {
         missile_.pos_=sf::Vector2f(-10000.f,-10000.f);
         missile_.sprite_.setPosition(missile_.pos_);
     }
