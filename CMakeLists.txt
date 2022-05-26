@@ -10,6 +10,7 @@ project(sfml-app)
 # C++ standard                                                                  #
 # ----------------------------------------------------------------------------- #
 
+
 set(CMAKE_CXX_COMPILER clang++)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -53,7 +54,7 @@ file(GLOB_RECURSE SRC_FILES CMAKE_CONFIGURE_DEPENDS
 "src/*.cpp"
 "src/*.c")
 
-find_package(SFML 2.5 COMPONENTS graphics window system REQUIRED)
+find_package(SFML 2.5 COMPONENTS graphics window system audio network REQUIRED)
 
 add_executable(sfml-app ${SRC_FILES})
 
@@ -65,9 +66,9 @@ target_include_directories(
 
 target_link_libraries(
     sfml-app
-    # -lsfml-audio
-    # -lsfml-network
+    sfml-audio
+    sfml-network
     sfml-graphics
     sfml-window
     sfml-system
-)
+    )
