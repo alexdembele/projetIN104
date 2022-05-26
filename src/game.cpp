@@ -82,6 +82,13 @@ Game::Game(std::vector<sf::Vector2f> checkpointsPositions, int nbCP) : finalCP_(
     sp_bouclier_used.setPosition(sf::Vector2f(14500.f,500.f));
     scaleToMinSize(sp_bouclier_used,800,800);
 
+    //etoile
+    tex_etoile.loadFromFile("../repository/Images/etoile.png");
+    sp_etoile.setTexture(tex_etoile);
+    setOriginToCenter(sp_etoile);
+    sp_etoile.setPosition(sf::Vector2f(13500.f,500.f));
+    scaleToMinSize(sp_etoile,800,800);
+
     //bouclier sur le pod
     tex_bouclier_pod.loadFromFile("../repository/Images/bouclier_pod.png");
     sp_bouclier_pod.setTexture(tex_bouclier_pod);
@@ -106,6 +113,9 @@ Game::Game(std::vector<sf::Vector2f> checkpointsPositions, int nbCP) : finalCP_(
     missile_.pos_=sf::Vector2f(0.f,0.f);
     missile_.vel_=sf::Vector2f(0.f,0.f);
     missile_.cible_=0;
+
+    //bullet
+    tex_bullet_.loadFromFile("../repository/Images/NMSFighterY.png");
 
     //son
     //asteroide
@@ -289,6 +299,12 @@ void Game::updatePhysics()
                 pods_[i].being_touched_=0;
             }
         }
+    }
+
+    if (pods_[0].bullet_==1 && pods_[0].bullet_timer_==0) {
+        podsSprites_[0].setTexture(tex_bullet_);
+    } else if (pods_[0].bullet_timer_==101) {
+        podsSprites_[0].setTexture(podsTextures_[0]);
     }
 
     //attaque du pod du joueur
@@ -476,6 +492,10 @@ void Game::draw(sf::RenderTarget& target, sf::RenderStates states) const
 
     if (pods_[0].missile_==1) {
         target.draw(missile_.sprite_);
+    }
+
+    if (pods_[0].etoile_==1) {
+        target.draw(sp_etoile);
     }
 }
 
