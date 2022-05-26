@@ -55,10 +55,15 @@ class Pod
     //tempete
     int tempete_;
     int tempete_timer_;
-
+    //missile
     int missile_;
     int missile_timer_;
-    
+    //bullet
+    int bullet_;
+    int bullet_timer_;
+    //etoile
+    int etoile_;
+    int etoile_timer_;
     
     
     
