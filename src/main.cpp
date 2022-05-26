@@ -12,6 +12,8 @@
 #include "SFML/Graphics/Texture.hpp"
 #include "SFML/System/Vector2.hpp"
 
+
+
 int main()
 {
     sf::ContextSettings settings;
