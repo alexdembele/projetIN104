@@ -4,6 +4,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
 #include <SFML/Window.hpp>
+#include <SFML/Audio.hpp>
 #include <vector>
 #include <cmath>
 #include "checkpoint.h"
@@ -106,6 +107,25 @@ class Game : public sf::Drawable
     Asteroide asteroide_;
 
     missile missile_;
+
+    sf::Sound laserAudio;
+    sf::SoundBuffer laserBuffer;
+    
+    sf::Sound plopAudio;
+    sf::SoundBuffer plopBuffer;
+
+    sf::Sound etoileAudio;
+    sf::SoundBuffer etoileBuffer;
+
+    
+
+    sf::Sound windAudio;
+    sf::SoundBuffer windBuffer;
+
+    sf::Sound missileHitAudio;
+    sf::SoundBuffer missileHitBuffer;
+
+
 
 
 };

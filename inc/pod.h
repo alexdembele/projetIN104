@@ -3,6 +3,7 @@
 
 #include <SFML/System.hpp>
 #include <cmath>
+#include <SFML/Audio.hpp>
 #include "checkpoint.h"
 #include "utils.h"
 
@@ -64,6 +65,12 @@ class Pod
     //etoile
     int etoile_;
     int etoile_timer_;
+
+    sf::Sound nyanCatAudio;
+    sf::SoundBuffer nyanCatBuffer;
+
+
+    
     
     
     
