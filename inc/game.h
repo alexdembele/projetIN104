@@ -7,6 +7,7 @@
 #include <SFML/Audio.hpp>
 #include <vector>
 #include <cmath>
+#include "SFML/Graphics/Texture.hpp"
 #include "checkpoint.h"
 #include "pod.h"
 #include <math.h>
@@ -91,6 +92,9 @@ class Game : public sf::Drawable
     sf::Texture tex_champi;
     sf::Sprite sp_champi;
 
+    sf::Texture tex_etoile;
+    sf::Sprite sp_etoile;
+
     sf::Text text;
     sf::Font font;
     
@@ -99,6 +103,8 @@ class Game : public sf::Drawable
 
     sf::Texture tex_tempete;
     sf::Sprite sp_tempete;
+
+    sf::Texture tex_bullet_;
 
     void attaque_laser(Pod pod);
     void attaque_missile(std::vector<Pod> pods_, int nbPods_);
