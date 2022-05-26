@@ -82,7 +82,6 @@ class Pod
     sf::SoundBuffer laserBuffer;
 
     sf::Sound bouclierAudio;
-<<<<<<< HEAD
     sf::SoundBuffer bouclierBuffer;
 
     sf::Sound missileAudio;
@@ -93,10 +92,8 @@ class Pod
     
     
     
-=======
-    sf::SoundBuffer bouclierBuffer;   
+     
        
->>>>>>> b315f67d15c80f78a495fbc332e3ff022f6ede57
     friend class Game; //allows game to modify pod's private attributes
 
 };
