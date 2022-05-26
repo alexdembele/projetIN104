@@ -105,6 +105,9 @@ Game::Game(std::vector<sf::Vector2f> checkpointsPositions, int nbCP) : finalCP_(
     missile_.pos_=sf::Vector2f(0.f,0.f);
     missile_.vel_=sf::Vector2f(0.f,0.f);
     missile_.cible_=0;
+
+    //son
+    
     
 }
 
