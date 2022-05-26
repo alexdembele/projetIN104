@@ -56,9 +56,17 @@ Pod::Pod(sf::Vector2f pos, float angle, sf::Vector2f vel)
     etoileBuffer.loadFromFile("../repository/Sons/etoile.wav");
     etoileAudio.setBuffer(etoileBuffer);
 
-    //tempeteSable
+    
     windBuffer.loadFromFile("../repository/Sons/wind-sound-effect.wav");
     windAudio.setBuffer(windBuffer);
+
+    bulletBillBuffer.loadFromFile("../repository/Sons/bulletBill.wav");
+    bulletBillAudio.setBuffer(bulletBillBuffer);
+
+    bouclierBuffer.loadFromFile("../repository/Sons/bulletBill.wav");
+    bouclierAudio.setBuffer(bulletBillBuffer);
+
+
 };
 
 
@@ -137,6 +145,7 @@ Decision Pod::getDecision(Pod &pod, std::vector<CheckPoint> otherCPs_, FinalChec
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::B) && pod.timer_bouclier_<0 && pod.bouclier_==0 && pod.etoile_!=1) {
             pod.timer_bouclier_+=1;
             pod.bouclier_=1;
+            pod.bouclierAudio.play();
         } else if(pod.timer_bouclier_>=0 && pod.timer_bouclier_<=100 && pod.bouclier_==1) {
             pod.timer_bouclier_+=1;
         } else if (pod.timer_bouclier_==101 && pod.bouclier_==1) {
@@ -194,6 +203,7 @@ Decision Pod::getDecision(Pod &pod, std::vector<CheckPoint> otherCPs_, FinalChec
             power*=2;
             pod.bouclier_=1;
             pod.autopilot_=true;
+            pod.bulletBillAudio.play();
         }
 
         
