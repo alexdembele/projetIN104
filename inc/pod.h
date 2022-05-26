@@ -31,7 +31,7 @@ class Pod
 
     private :
     sf::Vector2f pos_, vel_; //position and velocity vectors
-    float angle_; //angle in radians
+    float angle_; //angle en degres
     int nextCP_, lapCount_;
     
     bool IA_;

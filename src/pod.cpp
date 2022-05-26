@@ -106,7 +106,7 @@ Decision Pod::getDecision(Pod &pod, std::vector<CheckPoint> otherCPs_, FinalChec
         }
 
         //champignon
-        if(sf::Keyboard::isKeyPressed(sf::Keyboard::C) && pod.champignon_<0)
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::C) && pod.champignon_<0 && pod.etoile_!=1)
         {
             pod.champignon_+=1;
             pod.nyanCatAudio.play();
@@ -134,7 +134,7 @@ Decision Pod::getDecision(Pod &pod, std::vector<CheckPoint> otherCPs_, FinalChec
         }
         
         //bouclier
-        if(sf::Keyboard::isKeyPressed(sf::Keyboard::B) && pod.timer_bouclier_<0 && pod.bouclier_==0) {
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::B) && pod.timer_bouclier_<0 && pod.bouclier_==0 && pod.etoile_!=1) {
             pod.timer_bouclier_+=1;
             pod.bouclier_=1;
         } else if(pod.timer_bouclier_>=0 && pod.timer_bouclier_<=100 && pod.bouclier_==1) {
@@ -166,7 +166,7 @@ Decision Pod::getDecision(Pod &pod, std::vector<CheckPoint> otherCPs_, FinalChec
         }
         
         //etoile
-        if(sf::Keyboard::isKeyPressed(sf::Keyboard::E) && pod.etoile_timer_<0 && pod.etoile_==0) {
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::E) && pod.etoile_timer_<0 && pod.etoile_==0 && pod.champignon_!=1 && pod.bouclier_!=1) {
             pod.etoile_timer_+=1;
             pod.etoile_=1;
             power*=2;
@@ -188,7 +188,7 @@ Decision Pod::getDecision(Pod &pod, std::vector<CheckPoint> otherCPs_, FinalChec
         }
 
         //bullet
-        if(sf::Keyboard::isKeyPressed(sf::Keyboard::F) && pod.bullet_timer_<0 && pod.bullet_==0) {
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::F) && pod.bullet_timer_<0 && pod.bullet_==0 && pod.bouclier_!=1 && pod.champignon_!=1 && pod.etoile_!=1) {
             pod.bullet_timer_+=1;
             pod.bullet_=1;
             power*=2;

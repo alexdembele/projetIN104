@@ -50,7 +50,6 @@ int main()
     myGame.addPod(nbPods,positionPods);
     myGame.pods_[0].changeMode();
 
-    //printf("%f   %f\n",positionPods[2].x,checkpointsPositions[2].x);
 
     while (window.isOpen())
     {
