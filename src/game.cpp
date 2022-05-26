@@ -312,13 +312,12 @@ void Game::updatePhysics()
     }
 
     //attaque du pod du joueur
-    if (pods_[0].timer_attaque_==0) {
+    if (pods_[0].timer_attaque_==0 && pods_[0].attaque_==1) {
         attaque_laser(pods_[0]);
-    } else if (pods_[0].timer_attaque_>0 && pods_[0].timer_attaque_<=100) {
+    } else if (pods_[0].timer_attaque_>0 && pods_[0].timer_attaque_<=100 && pods_[0].attaque_==1 ) {
         laser_.pos_=laser_.pos_+laser_.vel_;
         laser_.shape_.setPosition(laser_.pos_);
-        
-    } else if (pods_[0].timer_attaque_>100) {
+    } else if (pods_[0].timer_attaque_==0 && pods_[0].attaque_==-1) {
         laser_.pos_=sf::Vector2f(-10000.f,-10000.f);
         laser_.shape_.setPosition(laser_.pos_);
     }
