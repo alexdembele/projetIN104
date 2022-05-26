@@ -313,9 +313,9 @@ void Game::updatePhysics()
 
 
     //pose du missile 
-    if (pods_[0].missile_timer_==0) {
+    if (pods_[0].missile_timer_==0 && pods_[0].missile_==1) {
         attaque_missile(pods_,nbPods_);
-    } else if (pods_[0].missile_timer_>0 && pods_[0].missile_timer_<=100) {
+    } else if (pods_[0].missile_timer_>0 && pods_[0].missile_timer_<=50 && pods_[0].missile_==1) {
         sf::Vector2f missile_target = pods_[missile_.cible_].pos_;
         sf::Vector2f missile_pos = missile_.pos_;
         sf::Vector2f vecteur_vers_target_missile = missile_target-missile_pos;
@@ -380,9 +380,9 @@ void Game::updatePhysics()
         missile_.sprite_.setPosition(missile_.pos_);
         missile_.sprite_.setRotation(missile_.angle_);
         if (norm_missile<300) {
-            pods_[0].missile_=101;
+            pods_[0].missile_timer_=51;
         }
-    } else if (pods_[0].missile_timer_>100) {
+    } else if (pods_[0].missile_timer_>50 && pods_[0].missile_==1) {
         missile_.pos_=sf::Vector2f(-10000.f,-10000.f);
         missile_.sprite_.setPosition(missile_.pos_);
     }
