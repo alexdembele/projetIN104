@@ -42,7 +42,6 @@ class Pod
     //attaque
     //laser
     int attaque_;
-    
     int timer_attaque_;
     //stun
     int being_touched_;
