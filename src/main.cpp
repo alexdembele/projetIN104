@@ -3,14 +3,11 @@
 #include <SFML/Window.hpp>
 #include <iostream>
 #include <cmath>
-#include "../inc/game.h"
 #include <vector>
 #include <string>
-#include "../inc/utils.h"
-#include "../inc/pod.h"
-#include "SFML/Graphics/Sprite.hpp"
-#include "SFML/Graphics/Texture.hpp"
-#include "SFML/System/Vector2.hpp"
+#include "game.h"
+#include "utils.h"
+#include "pod.h"
 
 
 

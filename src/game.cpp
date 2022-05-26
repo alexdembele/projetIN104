@@ -1,10 +1,9 @@
-#include "../inc/game.h"
-#include "../inc/checkpoint.h"
-#include "../inc/utils.h"
-#include "SFML/Graphics/RectangleShape.hpp"
-#include "SFML/System/Vector2.hpp"
+#include "game.h"
+#include "checkpoint.h"
+#include "utils.h"
 #include "pod.h"
-#include <SFML/Graphics/CircleShape.hpp>
+#include <SFML/Graphics.hpp>
+#include <SFML/System.hpp>
 #include <iostream>
 #include <math.h>
 
