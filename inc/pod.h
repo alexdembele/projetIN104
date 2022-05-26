@@ -78,8 +78,6 @@ class Pod
     sf::Sound windAudio;
     sf::SoundBuffer windBuffer;
 
-    sf::Sound bulletBillAudio;
-    sf::SoundBuffer bulletBillBuffer;
 
     sf::Sound bouclierAudio;
     sf::SoundBuffer bouclierBuffer;
