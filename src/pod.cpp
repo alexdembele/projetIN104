@@ -44,6 +44,11 @@ Pod::Pod(sf::Vector2f pos, float angle, sf::Vector2f vel)
     missile_=0;
     missile_timer_=-1;
 
+    bullet_=0;
+    bullet_timer_=-1;
+
+    etoile_=0;
+    etoile_timer_=-1;
     nyanCatBuffer.loadFromFile("../repository/Sons/nyanCat10s.wav");
     nyanCatAudio.setBuffer(nyanCatBuffer);
 };
@@ -59,7 +64,7 @@ Decision Pod::getDecision(Pod &pod, std::vector<CheckPoint> otherCPs_, FinalChec
         pod.autopilot_=!pod.autopilot_;
     }
 
-    if (pod.IA_==false && autopilot_==false) {
+    if (pod.IA_==false && pod.autopilot_==false) {
         //asteroide
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::A) && pod.asteroide_timer_<0 && pod.asteroide_pose_==0) {
             pod.asteroide_timer_+=1;
@@ -152,6 +157,35 @@ Decision Pod::getDecision(Pod &pod, std::vector<CheckPoint> otherCPs_, FinalChec
             pod.attaque_=0;
         }
         
+        //etoile
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::E) && pod.etoile_timer_<0 && pod.etoile_==0) {
+            pod.etoile_timer_+=1;
+            pod.etoile_=1;
+            power*=2;
+            pod.bouclier_=1;
+        } else if(pod.etoile_timer_>=0 && pod.etoile_timer_<=100 && pod.etoile_==1) {
+            pod.etoile_timer_+=1;
+            power*=2;
+            pod.bullet_timer_=1;
+        } else if (pod.etoile_timer_==101 && pod.etoile_==1) {
+            pod.etoile_=-1;
+            pod.etoile_timer_=0;
+            pod.bouclier_=0;
+        } else if (pod.etoile_timer_>=0 && pod.etoile_timer_<=100 && pod.etoile_==-1) {
+            pod.etoile_timer_+=1;
+        } else if (pod.etoile_timer_==101 && pod.etoile_==-1) {
+            pod.etoile_timer_=-1;
+            pod.etoile_=0;
+        }
+
+        //bullet
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::F) && pod.bullet_timer_<0 && pod.bullet_==0) {
+            pod.bullet_timer_+=1;
+            pod.bullet_=1;
+            power*=2;
+            pod.bouclier_=1;
+            pod.autopilot_=true;
+        }
 
         
         //clavier
@@ -233,7 +267,27 @@ Decision Pod::getDecision(Pod &pod, std::vector<CheckPoint> otherCPs_, FinalChec
 
         }
         return Decision(pod.pos_+1000.f*pod.vel_/norme(pod.vel_),0);
-    } else {
+    }
+
+    //bullet
+    if (pod.bullet_timer_>=0 && pod.bullet_timer_<=100 && pod.bullet_==1) {
+        pod.bullet_timer_+=1;
+        power*=2;
+        pod.bouclier_=1;
+        pod.autopilot_=true;
+    } else if (pod.bullet_timer_==101 && pod.bullet_==1) {
+        pod.bullet_=-1;
+        pod.bullet_timer_=0;
+        pod.bouclier_=0;
+        pod.autopilot_=false;
+    } else if (pod.bullet_timer_>=0 && pod.bullet_timer_<=100 && pod.bullet_==-1) {
+        pod.bullet_timer_+=1;
+    } else if (pod.bullet_timer_==101 && pod.bullet_==-1) {
+        pod.bullet_timer_=-1;
+        pod.bullet_=0;
+    }
+
+    if (pod.IA_==true || pod.autopilot_==true || pod.bullet_==1) {
 
         //IA NORMALE
         //on sauvegarde la position du next checkpoint pour ce pod
@@ -251,8 +305,7 @@ Decision Pod::getDecision(Pod &pod, std::vector<CheckPoint> otherCPs_, FinalChec
         }
     }
     
-    //default
-    //return Decision(sf::Vector2f(1000.f,1000.f),power);
+    return Decision(sf::Vector2f(1000.f,1000.f),power);
 };
 
 void Pod::changeMode(){

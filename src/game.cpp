@@ -87,7 +87,7 @@ Game::Game(std::vector<sf::Vector2f> checkpointsPositions, int nbCP) : finalCP_(
     sp_bouclier_pod.setTexture(tex_bouclier_pod);
     setOriginToCenter(sp_bouclier_pod);
     sp_bouclier_pod.setPosition(sf::Vector2f(0.f,0.f));
-    scaleToMinSize(sp_bouclier_pod,800,800);
+    scaleToMinSize(sp_bouclier_pod,2500,2500);
 
     //asteroide
     asteroide_.tex_.loadFromFile("../repository/Images/asteroide.png");
@@ -178,7 +178,6 @@ void Game::updatePhysics()
         //si le decalageAngle est superieur a pi/10 on fait un decalage de pi/10
         if(abs(decalageAngle)>18.f)
         {   
-            
             //calcul du vecteur vers le target intermediaire
             //vecteur vers la target intermediaire dans le repere du pod
             float decalage_intermediaire=0.f;
@@ -477,10 +476,11 @@ void Game::draw(sf::RenderTarget& target, sf::RenderStates states) const
     if (pods_[0].champignon_>=0 && pods_[0].champignon_<=100 ) {
         target.draw(sp_champi);
     }
-    if (pods_[0].bouclier_==1) {
+    if (pods_[0].bouclier_==1 && pods_[0].bullet_!=1 && pods_[0].etoile_!=1) {
         target.draw(sp_bouclier);
         target.draw(sp_bouclier_pod);
     }
+
     if (pods_[0].bouclier_==-1) {
         target.draw(sp_bouclier_used);
     }
@@ -494,7 +494,7 @@ void Game::draw(sf::RenderTarget& target, sf::RenderStates states) const
         target.draw(asteroide_.sp_);
     }
 
-    if (pods_[0].autopilot_) {
+    if (pods_[0].autopilot_ && pods_[0].bullet_!=1) {
         target.draw(text_IA);
     }
 
