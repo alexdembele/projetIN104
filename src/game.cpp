@@ -394,11 +394,13 @@ void Game::updatePhysics()
     
 
     physicsTime += PHYSICS_TIME_STEP;
+    
 }
 
 
 void Game::updateGraphics(sf::Time frameTime)
 {
+   
     if (frameTime==physicsTime) 
     {
         int nbPod=pods_.size();
