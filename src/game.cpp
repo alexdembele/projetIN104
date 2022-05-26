@@ -125,6 +125,11 @@ Game::Game(std::vector<sf::Vector2f> checkpointsPositions, int nbCP) : finalCP_(
     //laser
     laserBuffer.loadFromFile("../repository/Sons/laser.wav");
     laserAudio.setBuffer(laserBuffer);
+
+    //MissileHit
+    missileHitBuffer.loadFromFile("../repository/Sons/missileHit.wav");
+    missileHitAudio.setBuffer(missileHitBuffer);
+    
     
 }
 
@@ -283,6 +288,7 @@ void Game::updatePhysics()
         //istouched by laser or asteroid or missile
         if (pods_[i].bouclier_==0) {
             if (isTouched(pods_[i]) && pods_[i].being_touched_==0) {
+                missileHitAudio.play();
                 pods_[i].timer_touched_+=1;
                 pods_[i].being_touched_=1;
                 pods_[i].vel_=sf::Vector2f(0.0001f,0.0001f);
@@ -487,6 +493,7 @@ void Game::draw(sf::RenderTarget& target, sf::RenderStates states) const
     }
 
     if (pods_[0].tempete_==1) {
+        
         target.draw(sp_tempete);
     }
 

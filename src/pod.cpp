@@ -49,8 +49,16 @@ Pod::Pod(sf::Vector2f pos, float angle, sf::Vector2f vel)
 
     etoile_=0;
     etoile_timer_=-1;
+
     nyanCatBuffer.loadFromFile("../repository/Sons/nyanCat10s.wav");
     nyanCatAudio.setBuffer(nyanCatBuffer);
+
+    etoileBuffer.loadFromFile("../repository/Sons/etoile.wav");
+    etoileAudio.setBuffer(etoileBuffer);
+
+    //tempeteSable
+    windBuffer.loadFromFile("../repository/Sons/wind-sound-effect.wav");
+    windAudio.setBuffer(windBuffer);
 };
 
 
@@ -163,6 +171,7 @@ Decision Pod::getDecision(Pod &pod, std::vector<CheckPoint> otherCPs_, FinalChec
             pod.etoile_=1;
             power*=2;
             pod.bouclier_=1;
+            pod.etoileAudio.play();
         } else if(pod.etoile_timer_>=0 && pod.etoile_timer_<=100 && pod.etoile_==1) {
             pod.etoile_timer_+=1;
             power*=2;

@@ -69,6 +69,15 @@ class Pod
     sf::Sound nyanCatAudio;
     sf::SoundBuffer nyanCatBuffer;
 
+    sf::Sound etoileAudio;
+    sf::SoundBuffer etoileBuffer;
+
+    sf::Sound bulletBillAudio;
+    sf::SoundBuffer bulletBillBuffer;
+
+    sf::Sound windAudio;
+    sf::SoundBuffer windBuffer;
+
 
     
     
