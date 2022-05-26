@@ -114,10 +114,7 @@ class Game : public sf::Drawable
 
     missile missile_;
 
-    //pour les sons
-    sf::Sound laserAudio;
-    sf::SoundBuffer laserBuffer;
-    
+    //pour les sons   
     sf::Sound plopAudio;
     sf::SoundBuffer plopBuffer;
 
@@ -131,8 +128,7 @@ class Game : public sf::Drawable
     sf::Sound missileHitAudio;
     sf::SoundBuffer missileHitBuffer;
 
-    sf::Sound missileAudio;
-    sf::SoundBuffer missileBuffer;
+   
 
 };
 

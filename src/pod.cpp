@@ -66,6 +66,12 @@ Pod::Pod(sf::Vector2f pos, float angle, sf::Vector2f vel)
     bouclierBuffer.loadFromFile("../repository/Sons/bulletBill.wav");
     bouclierAudio.setBuffer(bulletBillBuffer);
 
+ 
+    laserBuffer.loadFromFile("../repository/Sons/laser.wav");
+    laserAudio.setBuffer(laserBuffer);  
+
+    missileBuffer.loadFromFile("../repository/Sons/missile.wav");
+    missileAudio.setBuffer(missileBuffer);
 
 };
 
@@ -101,6 +107,7 @@ Decision Pod::getDecision(Pod &pod, std::vector<CheckPoint> otherCPs_, FinalChec
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::M) && pod.missile_timer_<0 && pod.missile_==0) {
             pod.missile_timer_+=1;
             pod.missile_=1;
+            pod.missileAudio.play();
         } else if(pod.missile_timer_>=0 && pod.missile_timer_<=50 && pod.missile_==1) {
             pod.missile_timer_+=1;
         } else if (pod.missile_timer_==51 && pod.missile_==1) {
@@ -162,6 +169,7 @@ Decision Pod::getDecision(Pod &pod, std::vector<CheckPoint> otherCPs_, FinalChec
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::L) && pod.timer_attaque_<0 && pod.attaque_==0) {
             pod.timer_attaque_+=1;
             pod.attaque_=1;
+            pod.laserAudio.play();
         } else if(pod.timer_attaque_>=0 && pod.timer_attaque_<=35 && pod.attaque_==1) {
             pod.timer_attaque_+=1;
         } else if (pod.timer_attaque_==36 && pod.attaque_==1) {

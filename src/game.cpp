@@ -122,17 +122,13 @@ Game::Game(std::vector<sf::Vector2f> checkpointsPositions, int nbCP) : finalCP_(
     plopBuffer.loadFromFile("../repository/Sons/asteroide.wav");
     plopAudio.setBuffer(plopBuffer);
 
-    //laser
-    laserBuffer.loadFromFile("../repository/Sons/laser.wav");
-    laserAudio.setBuffer(laserBuffer);
+   
 
     //MissileHit
     missileHitBuffer.loadFromFile("../repository/Sons/missileHit.wav");
     missileHitAudio.setBuffer(missileHitBuffer);
     
-    //Missile
-    missileBuffer.loadFromFile("../repository/Sons/missile.wav");
-    missileAudio.setBuffer(missileBuffer);
+    
 }
 
 void Game::addPod(int nbPods,std::vector<sf::Vector2f> positionPods)
@@ -321,7 +317,7 @@ void Game::updatePhysics()
     } else if (pods_[0].timer_attaque_>0 && pods_[0].timer_attaque_<=100) {
         laser_.pos_=laser_.pos_+laser_.vel_;
         laser_.shape_.setPosition(laser_.pos_);
-        laserAudio.play();
+        
     } else if (pods_[0].timer_attaque_>100) {
         laser_.pos_=sf::Vector2f(-10000.f,-10000.f);
         laser_.shape_.setPosition(laser_.pos_);
@@ -346,7 +342,7 @@ void Game::updatePhysics()
     if (pods_[0].missile_timer_==0 && pods_[0].missile_==1) {
         attaque_missile(pods_,nbPods_);
     } else if (pods_[0].missile_timer_>0 && pods_[0].missile_timer_<=50 && pods_[0].missile_==1) {
-        missileAudio.play();
+        
         sf::Vector2f missile_target = pods_[missile_.cible_].pos_;
         sf::Vector2f missile_pos = missile_.pos_;
         sf::Vector2f vecteur_vers_target_missile = missile_target-missile_pos;
