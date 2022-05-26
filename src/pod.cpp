@@ -2,6 +2,7 @@
 #include "game.h"
 #include "utils.h"
 #include <SFML/System.hpp>
+#include <SFML/Audio.hpp>
 
 
 
@@ -42,6 +43,9 @@ Pod::Pod(sf::Vector2f pos, float angle, sf::Vector2f vel)
 
     missile_=0;
     missile_timer_=-1;
+
+    nyanCatBuffer.loadFromFile("../repository/Sons/nyanCat10s.wav");
+    nyanCatAudio.setBuffer(nyanCatBuffer);
 };
 
 
@@ -92,6 +96,7 @@ Decision Pod::getDecision(Pod &pod, std::vector<CheckPoint> otherCPs_, FinalChec
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::C) && pod.champignon_<0)
         {
             pod.champignon_+=1;
+            pod.nyanCatAudio.play();
         }
         else if(pod.champignon_>=0 && pod.champignon_<=100)
         {

@@ -4,6 +4,7 @@
 #include "pod.h"
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
+#include <SFML/Audio.hpp>
 #include <iostream>
 #include <math.h>
 
@@ -107,7 +108,11 @@ Game::Game(std::vector<sf::Vector2f> checkpointsPositions, int nbCP) : finalCP_(
     missile_.cible_=0;
 
     //son
-    
+    //asteroide
+    plopBuffer.loadFromFile("../repository/Sons/asteroide.mp3");
+    plopAudio.setBuffer(plopBuffer);
+
+    //champignon
     
 }
 
@@ -315,8 +320,9 @@ void Game::updatePhysics()
 
     //pose de l'asteroide par le joueur
     if (pods_[0].asteroide_pose_==1 && pods_[0].asteroide_timer_==0) {
-        asteroide_.pos_=pods_[0].pos_-900.f*pods_[0].vel_/norme(pods_[0].vel_);;
+        asteroide_.pos_=pods_[0].pos_-900.f*pods_[0].vel_/norme(pods_[0].vel_);
         asteroide_.sp_.setPosition(asteroide_.pos_);
+        plopAudio.play();
     } else if (pods_[0].asteroide_pose_==-1 && pods_[0].asteroide_timer_==0) {
         asteroide_.pos_=sf::Vector2f(-10000.f,-10000.f);
         asteroide_.sp_.setPosition(asteroide_.pos_);

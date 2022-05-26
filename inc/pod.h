@@ -3,6 +3,7 @@
 
 #include <SFML/System.hpp>
 #include <cmath>
+#include <SFML/Audio.hpp>
 #include "checkpoint.h"
 #include "utils.h"
 
@@ -58,6 +59,11 @@ class Pod
 
     int missile_;
     int missile_timer_;
+
+    sf::Sound nyanCatAudio;
+    sf::SoundBuffer nyanCatBuffer;
+
+
     
     
     
