@@ -140,7 +140,6 @@ void Game::addPod(int nbPods,std::vector<sf::Vector2f> positionPods)
         setOriginToCenter(podsSprites_[i]);
         podsSprites_[i].setPosition(positionPods[i]);
         scaleToMinSize(podsSprites_[i],800,800);
-        //printf("%f;%f\n",positionPods[i].x,positionPods[i].y);
 
 
     }
@@ -156,12 +155,10 @@ void Game::updatePhysics()
     int nbPod=pods_.size();
     for(int i=0;i<nbPod;i++)
     {   
-        //printf("decalage:%f\n",decalageAngle);
         Decision decision=pods_[i].getDecision(pods_[i],otherCPs_,finalCP_);
         sf::Vector2f pod_target = decision.target_;
         sf::Vector2f pod_pos = pods_[i].pos_;
         sf::Vector2f vecteur_vers_target = pod_target-pod_pos;
-        //sf::Vector2f vecteur_vers_direction = pods_[i].vel_;
         float decalageAngle = angle(sf::Vector2f(0.00000001f,0.f),vecteur_vers_target)-pods_[i].angle_;
 
         if (decalageAngle>=180) {
@@ -170,8 +167,6 @@ void Game::updatePhysics()
         if (decalageAngle<=-180) {
             decalageAngle+=360;
         }
-
-        //printf("%f   %f\n",pod_pos.x,pod_target.x);
 
         //si le decalageAngle est superieur a pi/10 on fait un decalage de pi/10
         if(abs(decalageAngle)>18.f)
@@ -208,7 +203,6 @@ void Game::updatePhysics()
             }
 
             //test si sur checkpoint et si lapcount
-            //printf("%d\n",pods_[i].nextCP_);
             if (norme_vintermediaire < 300.f && pods_[i].IA_==true) {
                 if (pods_[i].nextCP_<nbCP_-2) {
                     pods_[i].nextCP_=pods_[i].nextCP_+1;
@@ -219,10 +213,7 @@ void Game::updatePhysics()
                 pods_[i].lapCount_=pods_[i].lapCount_+1;
                 }
             }
-            //printf("%f   %f\n",Nx,Ny);
-            //printf("%f   %f    %f\n",decalage_intermediaire, decalageAngle,pods_[i].angle_);
-            //printf("%f;%f    %f;%f\n",pod_pos.x,pod_pos.y,target_intermediaire.x+pod_pos.x,target_intermediaire.y+pod_pos.y);
-
+           
         } else {
           
             float norm = norme(vecteur_vers_target);
@@ -275,7 +266,6 @@ void Game::updatePhysics()
                     pods_[i].lapCount_=pods_[i].lapCount_+1;
                 }
             }
-            //printf("%d\n",pods_[i].nextCP_);
         }
 
         //istouched by laser or asteroid or missile
@@ -290,7 +280,6 @@ void Game::updatePhysics()
             } else if (pods_[i].timer_touched_==51 && pods_[i].being_touched_==1) {
                 pods_[i].timer_touched_=0;
                 pods_[i].being_touched_=-1;
-                //pods_[i].vel_=sf::Vector2f(10.f,10.f);
             } else if (pods_[i].timer_touched_>=0 && pods_[i].timer_touched_<=50 && pods_[i].being_touched_==-1) {
                 pods_[i].timer_touched_+=1;
             } else if (pods_[i].timer_touched_==51 && pods_[i].being_touched_==-1) {
@@ -298,11 +287,6 @@ void Game::updatePhysics()
                 pods_[i].being_touched_=0;
             }
         }
-
-
-        //printf("%d : %d   %f  %f\n",i,pods_[i].timer_touched_,pods_[i].vel_.x,pods_[i].vel_.y);
-        //printf("%f;%f    %f;%f\n",pod_pos.x,pod_pos.y,pod_target.x+pod_pos.x,pod_target.y+pod_pos.y);
-        //printf("physics:%f\n",pods_[i].angle_);
     }
 
     //attaque du pod du joueur
@@ -311,7 +295,6 @@ void Game::updatePhysics()
     } else if (pods_[0].timer_attaque_>0 && pods_[0].timer_attaque_<=100) {
         laser_.pos_=laser_.pos_+laser_.vel_;
         laser_.shape_.setPosition(laser_.pos_);
-        //printf("%f  %f\n",laser_.pos_.x,laser_.pos_.y);
     } else if (pods_[0].timer_attaque_>100) {
         laser_.pos_=sf::Vector2f(-10000.f,-10000.f);
         laser_.shape_.setPosition(laser_.pos_);
@@ -407,12 +390,6 @@ void Game::updatePhysics()
         missile_.sprite_.setPosition(missile_.pos_);
     }
 
-    //printf("%d \n",pods_[0].tempete_);
-    //printf("%d    %d\n", pods_[0].IA_, pods_[0].autopilot_);
-    //printf("%d  %d\n", pods_[0].attaque_,pods_[0].timer_attaque_);
-    //printf("%f;%f\n",pods_[0].pos_.x,pods_[0].pos_.y);
-    
-
     physicsTime += PHYSICS_TIME_STEP;
 }
 
@@ -441,12 +418,7 @@ void Game::updateGraphics(sf::Time frameTime)
         {
             
             podsSprites_[i].move(((physicsTime-frameTime)/PHYSICS_TIME_STEP)*(pods_[i].pos_-podsSprites_[i].getPosition())); //bouge sprite avec fraction temporelle
-            //int angle_pod=int(pods_[i].angle_);
-            //int angle_int=angle_pod%360;
-            //float angle = angle_int;
-            //podsSprites_[i].rotate(((physicsTime-frameTime)/PHYSICS_TIME_STEP)*(angle-podsSprites_[i].getRotation())); //tourne sprite avec fraction temporelle
-            //probleme modulo
-            //printf("%f;%f\n",angle,podsSprites_[2].getRotation());
+
         }
     }
 }    
@@ -508,7 +480,6 @@ void Game::draw(sf::RenderTarget& target, sf::RenderStates states) const
 void Game::attaque_laser(Pod pod) {
     laser_.vel_=300.f*pod.vel_/norme(pod.vel_);
     laser_.pos_= pod.pos_ + 3.f*laser_.vel_;
-    //laser_.angle_=angle(laser_.vel_,sf::Vector2f(0.f,1.f));
     laser_.angle_=pod.angle_;
     laser_.shape_.setRotation(laser_.angle_);
     laser_.shape_.setPosition(laser_.pos_);
