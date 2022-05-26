@@ -84,6 +84,9 @@ class Game : public sf::Drawable
     sf::Texture tex_bouclier_used;
     sf::Sprite sp_bouclier_used;
 
+    sf::Texture tex_bouclier_pod;
+    sf::Sprite sp_bouclier_pod;
+
     sf::Texture tex_champi;
     sf::Sprite sp_champi;
 
