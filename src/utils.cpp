@@ -1,5 +1,5 @@
-#include "../inc/utils.h"
-#include "SFML/System/Vector2.hpp"
+#include "utils.h"
+#include <SFML/System.hpp>
 #include <cmath>
 #include <stdlib.h>
 #include <time.h>

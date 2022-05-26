@@ -1,7 +1,7 @@
-#include "../inc/pod.h"
-#include "../inc/game.h"
-#include "../inc/utils.h"
-#include <SFML/System/Vector2.hpp>
+#include "pod.h"
+#include "game.h"
+#include "utils.h"
+#include <SFML/System.hpp>
 
 
 

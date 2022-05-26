@@ -1,9 +1,8 @@
 #include <SFML/System.hpp>
 #include <SFML/Graphics.hpp>
 #include <string>
-#include "../inc/checkpoint.h"
-#include "../inc/utils.h"
-//#include "game.h"
+#include "checkpoint.h"
+#include "utils.h"
 
 CheckPoint::CheckPoint(sf::Vector2f center, unsigned int id) : circle_(600)
 {

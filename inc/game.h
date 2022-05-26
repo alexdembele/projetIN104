@@ -6,11 +6,6 @@
 #include <SFML/Window.hpp>
 #include <vector>
 #include <cmath>
-#include "SFML/Graphics/Font.hpp"
-#include "SFML/Graphics/Sprite.hpp"
-#include "SFML/Graphics/Text.hpp"
-#include "SFML/Graphics/Texture.hpp"
-#include "SFML/System/Vector2.hpp"
 #include "checkpoint.h"
 #include "pod.h"
 #include <math.h>
@@ -22,6 +17,12 @@ const sf::Time PHYSICS_TIME_STEP = sf::milliseconds(100);
 const std::string IMAGES_PATH = "../repository/Images/";
 const std::string FONT_PATH = "../repository/";
 
+
+struct GameInfos
+{
+    std::vector<Pod> pods;
+    std::vector<sf::Vector2f> cpPositions;
+};
 
 struct Asteroide {
     sf::Texture tex_;
