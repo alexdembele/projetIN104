@@ -80,13 +80,8 @@ class Pod
 
 
     sf::Sound bouclierAudio;
-    sf::SoundBuffer bouclierBuffer;
-
-
-    
-    
-    
-    
+    sf::SoundBuffer bouclierBuffer;   
+       
     friend class Game; //allows game to modify pod's private attributes
 
 };
