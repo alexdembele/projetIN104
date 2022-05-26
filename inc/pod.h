@@ -77,9 +77,21 @@ class Pod
     sf::Sound windAudio;
     sf::SoundBuffer windBuffer;
 
+    sf::Sound laserAudio;
+    sf::SoundBuffer laserBuffer;
 
     sf::Sound bouclierAudio;
-    sf::SoundBuffer bouclierBuffer;   
+    sf::SoundBuffer bouclierBuffer;
+
+    sf::Sound missileAudio;
+    sf::SoundBuffer missileBuffer;
+
+
+    
+    
+    
+    
+     
        
     friend class Game; //allows game to modify pod's private attributes
 
