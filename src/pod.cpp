@@ -64,7 +64,7 @@ Pod::Pod(sf::Vector2f pos, float angle, sf::Vector2f vel)
     bulletBillAudio.setBuffer(bulletBillBuffer);
 
     bouclierBuffer.loadFromFile("../repository/Sons/bouclier.wav");
-    bouclierAudio.setBuffer(bulletBillBuffer);
+    bouclierAudio.setBuffer(bouclierBuffer);
 
  
     laserBuffer.loadFromFile("../repository/Sons/laser.wav");
