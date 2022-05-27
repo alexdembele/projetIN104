@@ -207,7 +207,7 @@ void Game::updatePhysics()
             float Nx=cos(decalage_intermediaire)*vecteur_vers_target.x-sin(decalage_intermediaire)*vecteur_vers_target.y; 
             float Ny=sin(decalage_intermediaire)*vecteur_vers_target.x+cos(decalage_intermediaire)*vecteur_vers_target.y;
             
-            //vecteur finalement obtenu
+            //vecteur finalement obtenu vers la target virtuelle
             sf::Vector2f target_intermediaire;
             target_intermediaire=sf::Vector2f (Nx,Ny);
             
@@ -424,6 +424,7 @@ void Game::updateGraphics(sf::Time frameTime)
    
     if (frameTime==physicsTime) 
     {
+        //pour se recaler toujours sur la physique
         int nbPod=pods_.size();
         for(int i=0;i<nbPod;i++)
         {
@@ -434,12 +435,11 @@ void Game::updateGraphics(sf::Time frameTime)
 
     else
     {
+        // calcul des positions intermediaires des sprites
         int nbPod=pods_.size();
         for(int i=0;i<nbPod;i++)
-        {
-            
+        {  
             podsSprites_[i].move(((physicsTime-frameTime)/PHYSICS_TIME_STEP)*(pods_[i].pos_-podsSprites_[i].getPosition())); //bouge sprite avec fraction temporelle
-
         }
     }
 }    
@@ -519,6 +519,7 @@ void Game::draw(sf::RenderTarget& target, sf::RenderStates states) const
 
 //fonction qui initialise le laser a l'instant t=0 du tir
 void Game::attaque_laser(Pod pod) {
+    // lance un laser et gère le sprite associé
     laser_.vel_=300.f*pod.vel_/norme(pod.vel_);
     laser_.pos_= pod.pos_ + 3.f*laser_.vel_;
     laser_.angle_=pod.angle_;
@@ -550,6 +551,7 @@ void Game::attaque_missile(std::vector<Pod> pods_,int nbPods_) {
 
 //fonction qui determine si un Pod est touche par un missile, un laser ou un asteroide
 bool Game::isTouched(Pod pod) {
+    //regarde si un pod est touche par un bonus
     sf::Vector2f vect_asteroid=asteroide_.pos_-pod.pos_;
     sf::Vector2f vect_laser = laser_.pos_-pod.pos_;
     sf::Vector2f vect_missile = missile_.pos_-pod.pos_;

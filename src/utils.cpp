@@ -57,6 +57,7 @@ void setTextCenterPosition(sf::Text &txt, sf::Vector2f center)
 //fonction qui verifie si une position (x,y) n'est pas trop proche de positions existantes deja dans une liste (listex,listey)
 bool check(float x, float y, float *listex, float *listey, int size) {
     int i = 0;
+    // regarde si une position généré n'est pas trop proche d'autres générées précedemment 
     float norm = sqrt((x-listex[i])*(x-listex[i])+(y-listey[i])*(y-listey[i]));
     while (norm > 1000 && i<size-1) {
         i=i+1;
@@ -71,6 +72,7 @@ bool check(float x, float y, float *listex, float *listey, int size) {
 
 //fonction qui etablit une liste de positions aleatoires qui ne sont pas trop proches les unes des autres
 std::vector<sf::Vector2f> randomCP(int nbCP) {
+    // génère des positions aléatoires
     std::vector<sf::Vector2f> checkpointsPositions;
     float listex[nbCP];
     float listey[nbCP];
@@ -99,6 +101,7 @@ std::vector<sf::Vector2f> randomCP(int nbCP) {
 
 //calcul de la norme d'un vecteur
 float norme(sf::Vector2f vect) {
+    // calcul la norme d'un vecteur
     return sqrt(vect.x*vect.x+vect.y*vect.y);
 }
 
