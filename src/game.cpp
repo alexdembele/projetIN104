@@ -248,7 +248,7 @@ void Game::updatePhysics()
             //calcul angle
             pods_[i].angle_=pods_[i].angle_+decalageAngle;
 
-            
+            //on regarde si on passe par un checkpoint
             //test si sur checkpoint et si lapcount
             if (norm < 600.f  && pods_[i].IA_==true) {
                 if (pods_[i].nextCP_<nbCP_-2) {
@@ -406,7 +406,7 @@ void Game::updateGraphics(sf::Time frameTime)
 
     else
     {
-        // calcul des positions intermediaires des spriteq
+        // calcul des positions intermediaires des sprites
         int nbPod=pods_.size();
         for(int i=0;i<nbPod;i++)
         {  
@@ -475,6 +475,7 @@ void Game::draw(sf::RenderTarget& target, sf::RenderStates states) const
 
 
 void Game::attaque_laser(Pod pod) {
+    // lance un laser et gère le sprite associé
     laser_.vel_=300.f*pod.vel_/norme(pod.vel_);
     laser_.pos_= pod.pos_ + 3.f*laser_.vel_;
     laser_.angle_=pod.angle_;
@@ -483,6 +484,7 @@ void Game::attaque_laser(Pod pod) {
 }
 
 void Game::attaque_missile(std::vector<Pod> pods_,int nbPods_) {
+    // lance un missile et gère le sprite associé
     float dist=norme(pods_[0].pos_-pods_[1].pos_);
     missile_.cible_=1;
     for (int i=2;i<nbPods_;++i) {
@@ -501,6 +503,7 @@ void Game::attaque_missile(std::vector<Pod> pods_,int nbPods_) {
 }
 
 bool Game::isTouched(Pod pod) {
+    //regarde si un pod est touche par un bonus
     sf::Vector2f vect_asteroid=asteroide_.pos_-pod.pos_;
     sf::Vector2f vect_laser = laser_.pos_-pod.pos_;
     sf::Vector2f vect_missile = missile_.pos_-pod.pos_;

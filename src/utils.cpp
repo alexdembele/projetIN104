@@ -55,6 +55,7 @@ void setTextCenterPosition(sf::Text &txt, sf::Vector2f center)
 
 bool check(float x, float y, float *listex, float *listey, int size) {
     int i = 0;
+    // regarde si une position généré n'est pas trop proche d'autres générées précedemment 
     float norm = sqrt((x-listex[i])*(x-listex[i])+(y-listey[i])*(y-listey[i]));
     while (norm > 1000 && i<size-1) {
         i=i+1;
@@ -67,6 +68,7 @@ bool check(float x, float y, float *listex, float *listey, int size) {
 }
 
 std::vector<sf::Vector2f> randomCP(int nbCP) {
+    // génère des positions aléatoires
     std::vector<sf::Vector2f> checkpointsPositions;
     float listex[nbCP];
     float listey[nbCP];
@@ -93,10 +95,12 @@ std::vector<sf::Vector2f> randomCP(int nbCP) {
 }
 
 float norme(sf::Vector2f vect) {
+    // calcul la norme d'un vecteur
     return sqrt(vect.x*vect.x+vect.y*vect.y);
 }
 
 float angle(sf::Vector2f a, sf::Vector2f b) {
+    //calcul l'angle entre les vecteurs Oa et Ob (vecteur par rapport à l'origine)
     float dot=a.x * b.x + a.y *b.y;
     float norma=norme(a);
     float normb=norme(b);
