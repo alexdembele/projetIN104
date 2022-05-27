@@ -24,6 +24,7 @@ Pod::Pod(sf::Vector2f pos, float angle, sf::Vector2f vel)
     IA_=true;
     autopilot_=false;
     
+    //Bonus
     champignon_=-1;
     
     being_touched_=0;
@@ -50,6 +51,7 @@ Pod::Pod(sf::Vector2f pos, float angle, sf::Vector2f vel)
     etoile_=0;
     etoile_timer_=-1;
 
+    //chargement Son
     nyanCatBuffer.loadFromFile("../repository/Sons/nyanCat10s.wav");
     nyanCatAudio.setBuffer(nyanCatBuffer);
 

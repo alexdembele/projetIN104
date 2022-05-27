@@ -170,12 +170,14 @@ void Game::updatePhysics()
     int nbPod=pods_.size();
     for(int i=0;i<nbPod;i++)
     {   
+        //Calcul de l'angle de decalage 
         Decision decision=pods_[i].getDecision(pods_[i],otherCPs_,finalCP_);
         sf::Vector2f pod_target = decision.target_;
         sf::Vector2f pod_pos = pods_[i].pos_;
         sf::Vector2f vecteur_vers_target = pod_target-pod_pos;
         float decalageAngle = angle(sf::Vector2f(0.00000001f,0.f),vecteur_vers_target)-pods_[i].angle_;
 
+        // On se ramene aux angles entre -180° et 180 °
         if (decalageAngle>=180) {
             decalageAngle-=360;
         }
@@ -196,6 +198,7 @@ void Game::updatePhysics()
                 decalage_intermediaire=(-decalageAngle-18)*(M_PI/180.f);
             }
             
+            //creation d'une target virtuelle en faisant "tourner" le checkpoint
             float Nx=cos(decalage_intermediaire)*vecteur_vers_target.x-sin(decalage_intermediaire)*vecteur_vers_target.y; 
             float Ny=sin(decalage_intermediaire)*vecteur_vers_target.x+cos(decalage_intermediaire)*vecteur_vers_target.y;
             
