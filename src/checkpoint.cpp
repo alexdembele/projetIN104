@@ -4,6 +4,7 @@
 #include "checkpoint.h"
 #include "utils.h"
 
+//constructeur des checkpoints
 CheckPoint::CheckPoint(sf::Vector2f center, unsigned int id) : circle_(600)
 {
     setOriginToCenter(circle_);
@@ -30,7 +31,7 @@ sf::Vector2f CheckPoint::getPosition()
     return circle_.getPosition();
 }
 
-
+//constructeur du dernier checkpoint
 FinalCheckPoint::FinalCheckPoint(sf::Vector2f center) : circle_(600)
 {
     setOriginToCenter(circle_);

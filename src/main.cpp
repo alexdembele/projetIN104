@@ -37,17 +37,17 @@ int main()
     //initialisation random
     srand(time(NULL));
     
-    //Checkpoints
+    //Creation aleatoire des Checkpoints
     unsigned int nbCP = 6;
     std::vector<sf::Vector2f> checkpointsPositions = randomCP(nbCP);
-    //Vous pouvez aussi initialiser myGame avec une liste de checkpoints prédéfinie
     Game myGame(checkpointsPositions,nbCP);
 
 
-    //pods 
+    //Placement aleatoire des Pods 
     unsigned int nbPods = 4;
     std::vector<sf::Vector2f> positionPods = randomCP(nbPods);
     myGame.addPod(nbPods,positionPods);
+    //le joueur 1 est un humain et les autre sont des robots
     myGame.pods_[0].changeMode();
 
 
@@ -82,20 +82,6 @@ int main()
 
                 //reprend le temps écoulé depuis le début pour rester précis
                 frameTime = globalClock.getElapsedTime();
-
-                //on met a jour les tours
-                std::string score="";
-                for (unsigned int i=0; i<nbPods ;++i) {
-                    if (i==0) {
-                        score += "JOUEUR : " +(std::to_string(myGame.pods_[i].getLap()))+"\n";
-                    } else {
-                        score += "IA " + (std::to_string(i)) + " : " + (std::to_string(myGame.pods_[i].getLap()))+"\n";
-                    }
-                }
-                myGame.text.setString(score);
-
-                
-
             }
             
             //met à jour les sprites au temps actuel

@@ -8,6 +8,8 @@
 #include <iostream>
 #include <math.h>
 
+
+//constructeur de Game
 Game::Game(std::vector<sf::Vector2f> checkpointsPositions, int nbCP) : finalCP_(checkpointsPositions[0])
 {   
     nbPods_=0;
@@ -38,7 +40,7 @@ Game::Game(std::vector<sf::Vector2f> checkpointsPositions, int nbCP) : finalCP_(
     laser_.pos_=sf::Vector2f(-1000.f,-1000.f);
     laser_.vel_=sf::Vector2f(0.f,0.f);
 
-    //affichage texte
+    //affichage texte du score
     font.loadFromFile("../repository/Fredoka-Bold.ttf");
     text.setFont(font);
     text.setCharacterSize(400);
@@ -115,15 +117,13 @@ Game::Game(std::vector<sf::Vector2f> checkpointsPositions, int nbCP) : finalCP_(
     missile_.vel_=sf::Vector2f(0.f,0.f);
     missile_.cible_=0;
 
-    //bullet
+    //bullet bill : on change la texture du pod
     tex_bullet_.loadFromFile("../repository/Images/NMSFighterY.png");
 
     //son
     //asteroide
     plopBuffer.loadFromFile("../repository/Sons/asteroide.wav");
     plopAudio.setBuffer(plopBuffer);
-
-   
 
     //MissileHit
     missileHitBuffer.loadFromFile("../repository/Sons/missileHit.wav");
@@ -132,6 +132,7 @@ Game::Game(std::vector<sf::Vector2f> checkpointsPositions, int nbCP) : finalCP_(
     
 }
 
+//ajout de pods
 void Game::addPod(int nbPods,std::vector<sf::Vector2f> positionPods)
 {   
     //on reserve l'emplacement pour les pods, textures et sprite
@@ -165,18 +166,23 @@ void Game::addPod(int nbPods,std::vector<sf::Vector2f> positionPods)
 
 
 
-
+//on update la physique avec un pas de temps plus long
 void Game::updatePhysics()
-{  
+{   
+    //pour l'affichage du score
+    std::string score=""; 
+    
     int nbPod=pods_.size();
     for(int i=0;i<nbPod;i++)
     {   
+        //on calcule le decalage d'angle entre le vecteur vitesse du pod et le vecteur "vers la target"
         Decision decision=pods_[i].getDecision(pods_[i],otherCPs_,finalCP_);
         sf::Vector2f pod_target = decision.target_;
         sf::Vector2f pod_pos = pods_[i].pos_;
         sf::Vector2f vecteur_vers_target = pod_target-pod_pos;
         float decalageAngle = angle(sf::Vector2f(0.00000001f,0.f),vecteur_vers_target)-pods_[i].angle_;
 
+        //on a ajouté ces lignes car le domaine de definition des angles est [-180,+180]
         if (decalageAngle>=180) {
             decalageAngle-=360;
         }
@@ -184,25 +190,28 @@ void Game::updatePhysics()
             decalageAngle+=360;
         }
 
-        //si le decalageAngle est superieur a pi/10 on fait un decalage de pi/10
+        //si le decalageAngle est superieur a pi/10 on fait un decalage plafonné à pi/10
         if(abs(decalageAngle)>18.f)
         {   
-            //calcul du vecteur vers le target intermediaire
-            //vecteur vers la target intermediaire dans le repere du pod
             float decalage_intermediaire=0.f;
             //on check si le decalage est vers le haut ou le bas
             if (decalageAngle>0) {
+                //on doit faire une rotation de decalageAngle+(pi/10) à notre vecteur "vers la target"
                 decalage_intermediaire=(-decalageAngle+18)*(M_PI/180.f);
             } else if (decalageAngle<=0) {
+                //on doit faire une rotation de decalageAngle-(pi/10) à notre vecteur "vers la target"
                 decalage_intermediaire=(-decalageAngle-18)*(M_PI/180.f);
             }
             
+            //on applique la matrice de rotation d'angle "decalage_intermediaire" à notre vecteur "vers la target"
             float Nx=cos(decalage_intermediaire)*vecteur_vers_target.x-sin(decalage_intermediaire)*vecteur_vers_target.y; 
             float Ny=sin(decalage_intermediaire)*vecteur_vers_target.x+cos(decalage_intermediaire)*vecteur_vers_target.y;
             
+            //vecteur finalement obtenu
             sf::Vector2f target_intermediaire;
             target_intermediaire=sf::Vector2f (Nx,Ny);
             
+            //calcul de la norme
             float norme_vintermediaire=norme(target_intermediaire);
             
             //calcul vitesse
@@ -218,7 +227,7 @@ void Game::updatePhysics()
                 pods_[i].angle_=pods_[i].angle_-18.f;
             }
 
-            //test si sur checkpoint et si lapcount
+            //test pour savoir si on est sur checkpoint et si on incremente lapcount
             if (norme_vintermediaire < 600.f && pods_[i].IA_==true) {
                 if (pods_[i].nextCP_<nbCP_-2) {
                     pods_[i].nextCP_=pods_[i].nextCP_+1;
@@ -229,9 +238,11 @@ void Game::updatePhysics()
                 pods_[i].lapCount_=pods_[i].lapCount_+1;
                 }
             }
-           
+        
+        //si le decalage d'angle est inferieur a pi/10, on fait une rotation de decalageAngle
         } else {
           
+            //calcul de la norme
             float norm = norme(vecteur_vers_target);
             
             //calcul vitesse
@@ -243,8 +254,7 @@ void Game::updatePhysics()
             //calcul angle
             pods_[i].angle_=pods_[i].angle_+decalageAngle;
 
-            
-            //test si sur checkpoint et si lapcount
+            //test pour savoir si on est sur checkpoint et si on incremente lapcount
             if (norm < 600.f  && pods_[i].IA_==true) {
                 if (pods_[i].nextCP_<nbCP_-2) {
                     pods_[i].nextCP_=pods_[i].nextCP_+1;
@@ -257,6 +267,9 @@ void Game::updatePhysics()
             }
             
         }
+
+        //si on est en commande manuelle, lorsqu'on passe sur les checkpoints, ils vont se colorer en vert
+        //puis redevenir normaux lorsqu'on a finit un tour
         if (pods_[i].IA_==false) { 
             float dist;
             if (pods_[i].nextCP_>=0) {
@@ -284,7 +297,10 @@ void Game::updatePhysics()
             }
         }
 
-        //istouched by laser or asteroid or missile
+        //Si le pod est touché par un laser, un missile ou un asteroide on le ralenti pendant une durée
+        //pendant cette durée, il ne peut pas être touché a nouveau
+        //puis pendant une autre durée, il reste immunisé par les attaques
+        //et une joue un son
         if (pods_[i].bouclier_==0) {
             if (isTouched(pods_[i]) && pods_[i].being_touched_==0) {
                 missileHitAudio.play();
@@ -304,17 +320,28 @@ void Game::updatePhysics()
                 pods_[i].being_touched_=0;
             }
         }
+
+        //affichage du score
+        if (i==0) {
+            score += "JOUEUR : " +(std::to_string(pods_[i].getLap()))+"\n";
+        } else {
+            score += "IA " + (std::to_string(i)) + " : " + (std::to_string(pods_[i].getLap()))+"\n";
+        }
     }
 
+    //gestion des attaques lancées par le pod 0 (pod humain controlé par le joueur)
+    //bullet bill : on change la texture du pod
     if (pods_[0].bullet_==1 && pods_[0].bullet_timer_==0) {
         podsSprites_[0].setTexture(tex_bullet_);
     } else if (pods_[0].bullet_timer_==101) {
         podsSprites_[0].setTexture(podsTextures_[0]);
     }
 
-    //attaque du pod du joueur
+    //laser
+    //on lance le laser a l'instant 0
     if (pods_[0].timer_attaque_==0 && pods_[0].attaque_==1) {
         attaque_laser(pods_[0]);
+    //puis il se deplace de maniere rectiligne
     } else if (pods_[0].timer_attaque_>0 && pods_[0].timer_attaque_<=100 && pods_[0].attaque_==1 ) {
         laser_.pos_=laser_.pos_+laser_.vel_;
         laser_.shape_.setPosition(laser_.pos_);
@@ -338,9 +365,11 @@ void Game::updatePhysics()
         sp_bouclier_pod.setPosition(pods_[0].pos_);
     }
 
+    //missile
     //pose du missile 
     if (pods_[0].missile_timer_==0 && pods_[0].missile_==1) {
         attaque_missile(pods_,nbPods_);
+    //puis il se dirige vers sa cible avec la meme phyique qu'un pod sans la limitation pi/10
     } else if (pods_[0].missile_timer_>0 && pods_[0].missile_timer_<=50 && pods_[0].missile_==1) {
         
         sf::Vector2f missile_target = pods_[missile_.cible_].pos_;
@@ -376,6 +405,12 @@ void Game::updatePhysics()
         missile_.sprite_.setPosition(missile_.pos_);
     }
 
+    
+
+    //affichage score                
+    text.setString(score);
+
+    //on incremente le temps
     physicsTime += PHYSICS_TIME_STEP;
 }
 
@@ -383,7 +418,7 @@ void Game::updatePhysics()
 
 
 
-
+//update de l'affichage sur un pas de temps plus court grace a l'interpolation
 void Game::updateGraphics(sf::Time frameTime)
 {
    
@@ -410,9 +445,14 @@ void Game::updateGraphics(sf::Time frameTime)
 }    
 
 
+
+//
 void Game::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
+    //affichage du background
     target.draw(backgroundSprite_, states);
+
+    //affichage des checkpoints
     target.draw(finalCP_, states);
 
     for (const auto &cp : otherCPs_)
@@ -420,19 +460,27 @@ void Game::draw(sf::RenderTarget& target, sf::RenderStates states) const
         target.draw(cp, states);
     }
 
+    //affichage des Pods
     for (const auto &podSprite : podsSprites_)
     {
         target.draw(podSprite, states);
     }
 
+    //affichage du score
     target.draw(text);
 
-    //bonus actif
+    //affichage de l'etat des bonus
     if (pods_[0].champignon_>=0 && pods_[0].champignon_<=100 ) {
-        target.draw(sp_champi);
+        target.draw(sp_champi);        
     }
+
+    if (pods_[0].etoile_==1) {
+        target.draw(sp_etoile);
+    }
+
     if (pods_[0].bouclier_==1 && pods_[0].bullet_!=1 && pods_[0].etoile_!=1) {
         target.draw(sp_bouclier);
+        //affichage du bouclier sur le pod
         target.draw(sp_bouclier_pod);
     }
 
@@ -441,16 +489,13 @@ void Game::draw(sf::RenderTarget& target, sf::RenderStates states) const
     }
     
 
+    //affichage des sprites des attaques
     if (pods_[0].attaque_==1) {
         target.draw(laser_.shape_);
     }
 
     if (pods_[0].asteroide_pose_==1) {
         target.draw(asteroide_.sp_);
-    }
-
-    if (pods_[0].autopilot_ && pods_[0].bullet_!=1) {
-        target.draw(text_IA);
     }
 
     if (pods_[0].tempete_==1) {
@@ -462,12 +507,17 @@ void Game::draw(sf::RenderTarget& target, sf::RenderStates states) const
         target.draw(missile_.sprite_);
     }
 
-    if (pods_[0].etoile_==1) {
-        target.draw(sp_etoile);
+
+    //affichage du mode autopilot ou non
+    if (pods_[0].autopilot_ && pods_[0].bullet_!=1) {
+        target.draw(text_IA);
     }
+    
 }
 
 
+
+//fonction qui initialise le laser a l'instant t=0 du tir
 void Game::attaque_laser(Pod pod) {
     laser_.vel_=300.f*pod.vel_/norme(pod.vel_);
     laser_.pos_= pod.pos_ + 3.f*laser_.vel_;
@@ -476,7 +526,10 @@ void Game::attaque_laser(Pod pod) {
     laser_.shape_.setPosition(laser_.pos_);
 }
 
+
+//fonction qui initialise le missile a l'instant t=0 du tir
 void Game::attaque_missile(std::vector<Pod> pods_,int nbPods_) {
+    //recherche de la cible la plus proche
     float dist=norme(pods_[0].pos_-pods_[1].pos_);
     missile_.cible_=1;
     for (int i=2;i<nbPods_;++i) {
@@ -486,7 +539,7 @@ void Game::attaque_missile(std::vector<Pod> pods_,int nbPods_) {
             missile_.cible_=i;
         }
     }
-    
+    //initialisation
     missile_.vel_=300.f*pods_[0].vel_/norme(pods_[0].vel_);
     missile_.pos_= pods_[0].pos_ + 3.f*missile_.vel_;
     missile_.angle_=pods_[0].angle_;
@@ -494,6 +547,8 @@ void Game::attaque_missile(std::vector<Pod> pods_,int nbPods_) {
     missile_.sprite_.setPosition(missile_.pos_);
 }
 
+
+//fonction qui determine si un Pod est touche par un missile, un laser ou un asteroide
 bool Game::isTouched(Pod pod) {
     sf::Vector2f vect_asteroid=asteroide_.pos_-pod.pos_;
     sf::Vector2f vect_laser = laser_.pos_-pod.pos_;

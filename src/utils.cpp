@@ -53,6 +53,8 @@ void setTextCenterPosition(sf::Text &txt, sf::Vector2f center)
     txt.setPosition(center + offset);
 }
 
+
+//fonction qui verifie si une position (x,y) n'est pas trop proche de positions existantes deja dans une liste (listex,listey)
 bool check(float x, float y, float *listex, float *listey, int size) {
     int i = 0;
     float norm = sqrt((x-listex[i])*(x-listex[i])+(y-listey[i])*(y-listey[i]));
@@ -66,6 +68,8 @@ bool check(float x, float y, float *listex, float *listey, int size) {
     return false;
 }
 
+
+//fonction qui etablit une liste de positions aleatoires qui ne sont pas trop proches les unes des autres
 std::vector<sf::Vector2f> randomCP(int nbCP) {
     std::vector<sf::Vector2f> checkpointsPositions;
     float listex[nbCP];
@@ -92,14 +96,20 @@ std::vector<sf::Vector2f> randomCP(int nbCP) {
     return checkpointsPositions;
 }
 
+
+//calcul de la norme d'un vecteur
 float norme(sf::Vector2f vect) {
     return sqrt(vect.x*vect.x+vect.y*vect.y);
 }
 
+
+//calcul de l'angle entre 2 vecteurs
 float angle(sf::Vector2f a, sf::Vector2f b) {
+    //produit scalaire
     float dot=a.x * b.x + a.y *b.y;
     float norma=norme(a);
     float normb=norme(b);
+    //produit vectoriel
     float prodVectoriel=(a.x*b.y-a.y*b.x);
   
     if (prodVectoriel>=0)

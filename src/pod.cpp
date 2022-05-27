@@ -5,13 +5,14 @@
 #include <SFML/Audio.hpp>
 
 
-
+//Constructeur Decision
 Decision::Decision(sf::Vector2f target, float power) 
 {   
     target_=target;
     power_=power;
 };
 
+//Constructeur Pods
 Pod::Pod(sf::Vector2f pos, float angle, sf::Vector2f vel) 
 {
     pos_=pos;
@@ -21,9 +22,13 @@ Pod::Pod(sf::Vector2f pos, float angle, sf::Vector2f vel)
     nextCP_=0;
     lapCount_=0;
     
+    //variable constante pendant la game: humain ou robot
     IA_=true;
+
+    //pour changer de mode pendant la game
     autopilot_=false;
     
+    //bonus
     champignon_=-1;
     
     being_touched_=0;
@@ -50,6 +55,8 @@ Pod::Pod(sf::Vector2f pos, float angle, sf::Vector2f vel)
     etoile_=0;
     etoile_timer_=-1;
 
+
+    //audio
     nyanCatBuffer.loadFromFile("../repository/Sons/nyanCat10s.wav");
     nyanCatAudio.setBuffer(nyanCatBuffer);
 
@@ -82,11 +89,16 @@ Decision Pod::getDecision(Pod &pod, std::vector<CheckPoint> otherCPs_, FinalChec
 {   
     float power=50.f;
 
+    //changement de mode : autopilot ou non
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::I)) {
         pod.autopilot_=!pod.autopilot_;
     }
 
+
+    //si le pod n'est pas en mode autopilot=commande manuelle
+    //alors on peut utiliser les bonus et commander manuellement le pod
     if (pod.IA_==false && pod.autopilot_==false) {
+        
         //asteroide
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::A) && pod.asteroide_timer_<0 && pod.asteroide_pose_==0) {
             pod.asteroide_timer_+=1;
@@ -204,8 +216,7 @@ Decision Pod::getDecision(Pod &pod, std::vector<CheckPoint> otherCPs_, FinalChec
             pod.etoile_=0;
         }
 
-        //bullet
-
+        //bullet bill
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::F) && pod.bullet_timer_<0 && pod.bullet_==0 && pod.bouclier_!=1 && pod.champignon_!=1 && pod.etoile_!=1) {
             pod.bullet_timer_+=1;
             pod.bullet_=1;
@@ -216,7 +227,7 @@ Decision Pod::getDecision(Pod &pod, std::vector<CheckPoint> otherCPs_, FinalChec
         }
 
         
-        //clavier
+        //commande manuelle au clavier
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)&&sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
         {
             // left key is pressed: move our character
@@ -253,8 +264,6 @@ Decision Pod::getDecision(Pod &pod, std::vector<CheckPoint> otherCPs_, FinalChec
             sf::Vector2f target=pod.pos_+1000.f*sf::Vector2f(1,-1);
             return Decision(target, power);
         }
-
-
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
         {
             // left key is pressed: move our character
@@ -264,40 +273,27 @@ Decision Pod::getDecision(Pod &pod, std::vector<CheckPoint> otherCPs_, FinalChec
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
         {
             // left key is pressed: move our character
-                
-        
-        
             sf::Vector2f target= pod.pos_+1000.f*sf::Vector2f(1,0);
-            return Decision(target, power);
-            
-                
+            return Decision(target, power);   
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
         {
             // left key is pressed: move our character
-                
-            
             sf::Vector2f target= pod.pos_+1000.f*sf::Vector2f(0,1);
-            return Decision(target, power);
-                
+            return Decision(target, power);  
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
         {
             // left key is pressed: move our character
-                
-            
-            
-            
             sf::Vector2f target= pod.pos_-1000.f*sf::Vector2f(1,0);
             return Decision(target, power);
-            
-
-
         }
         return Decision(pod.pos_+1000.f*pod.vel_/norme(pod.vel_),0);
     }
 
-    //bullet
+
+    //bullet bill
+    //on a sorti cette partie du code de bullet bill car bullet bill active le mode autopilot
     if (pod.bullet_timer_>=0 && pod.bullet_timer_<=100 && pod.bullet_==1) {
         pod.bullet_timer_+=1;
         power*=2;
@@ -315,16 +311,14 @@ Decision Pod::getDecision(Pod &pod, std::vector<CheckPoint> otherCPs_, FinalChec
         pod.bullet_=0;
     }
 
+    //si on est en mode autopilot ou que c'est un robot, on va chercher le checkpoint suivant
     if (pod.IA_==true || pod.autopilot_==true || pod.bullet_==1) {
-
-        //IA NORMALE
+        
         //on sauvegarde la position du next checkpoint pour ce pod
         int nextCP=pod.nextCP_; 
         if (nextCP!=-1) {
-
             //on va chercher la position du checkpoint pour ce pod
             sf::Vector2f position_nextCP=otherCPs_[nextCP].getPosition();
-
             //on retourne la decision
             return Decision(position_nextCP,power);
         } else {
@@ -336,6 +330,8 @@ Decision Pod::getDecision(Pod &pod, std::vector<CheckPoint> otherCPs_, FinalChec
     return Decision(sf::Vector2f(1000.f,1000.f),power);
 };
 
+
+//fonctions auxiliaires
 void Pod::changeMode(){
     IA_=!(IA_);
 };
