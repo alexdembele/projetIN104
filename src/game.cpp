@@ -35,7 +35,7 @@ Game::Game(std::vector<sf::Vector2f> checkpointsPositions, int nbCP) : finalCP_(
     laser_.shape_.setOutlineThickness(10);
     laser_.shape_.setOutlineColor(sf::Color::Black);
     laser_.angle_=0.f;
-    laser_.pos_=sf::Vector2f(0.f,0.f);
+    laser_.pos_=sf::Vector2f(-1000.f,-1000.f);
     laser_.vel_=sf::Vector2f(0.f,0.f);
 
     //affichage texte
@@ -100,17 +100,18 @@ Game::Game(std::vector<sf::Vector2f> checkpointsPositions, int nbCP) : finalCP_(
     asteroide_.tex_.loadFromFile("../repository/Images/asteroide.png");
     asteroide_.sp_.setTexture(asteroide_.tex_);
     setOriginToCenter(asteroide_.sp_);
-    asteroide_.sp_.setPosition(sf::Vector2f(0.f,0.f));
+    asteroide_.sp_.setPosition(sf::Vector2f(-1000.f,-1000.f));
     scaleToMinSize(asteroide_.sp_,800,800);
+    asteroide_.pos_=sf::Vector2f(-1000.f,-1000.f);
 
     //missile
     missile_.texture_.loadFromFile("../repository/Images/missile.png");
     missile_.sprite_.setTexture(missile_.texture_);
     setOriginToCenter(missile_.sprite_);
-    missile_.sprite_.setPosition(sf::Vector2f(0.f,0.f));
+    missile_.sprite_.setPosition(sf::Vector2f(-1000.f,-1000.f));
     scaleToMinSize(missile_.sprite_,800,800);
     missile_.angle_=0.f;
-    missile_.pos_=sf::Vector2f(0.f,0.f);
+    missile_.pos_=sf::Vector2f(-1000.f,-1000.f);
     missile_.vel_=sf::Vector2f(0.f,0.f);
     missile_.cible_=0;
 
@@ -221,7 +222,7 @@ void Game::updatePhysics()
             }
 
             //test si sur checkpoint et si lapcount
-            if (norme_vintermediaire < 300.f && pods_[i].IA_==true) {
+            if (norme_vintermediaire < 600.f && pods_[i].IA_==true) {
                 if (pods_[i].nextCP_<nbCP_-2) {
                     pods_[i].nextCP_=pods_[i].nextCP_+1;
                 } else if (pods_[i].nextCP_==nbCP_-2) {
@@ -247,7 +248,7 @@ void Game::updatePhysics()
 
             
             //test si sur checkpoint et si lapcount
-            if (norm < 300.f  && pods_[i].IA_==true) {
+            if (norm < 600.f  && pods_[i].IA_==true) {
                 if (pods_[i].nextCP_<nbCP_-2) {
                     pods_[i].nextCP_=pods_[i].nextCP_+1;
                 } else if (pods_[i].nextCP_==nbCP_-2) {
@@ -269,7 +270,7 @@ void Game::updatePhysics()
                 dist=norme(podCheckpoint);
             }
 
-            if (dist < 300) {
+            if (dist < 600.f) {
                 if (pods_[i].nextCP_<nbCP_-2) {
                     otherCPs_[pods_[i].nextCP_].fillingText_.setFillColor(sf::Color::Green);
                     pods_[i].nextCP_=pods_[i].nextCP_+1;
