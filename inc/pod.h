@@ -65,6 +65,7 @@ class Pod
     int etoile_;
     int etoile_timer_;
 
+    //Pour les sons
     sf::Sound nyanCatAudio;
     sf::SoundBuffer nyanCatBuffer;
 

@@ -221,37 +221,31 @@ Decision Pod::getDecision(Pod &pod, std::vector<CheckPoint> otherCPs_, FinalChec
         //clavier
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)&&sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
         {
-            // left key is pressed: move our character
             sf::Vector2f target=pod.pos_-1000.f*sf::Vector2f(0,1);
             return Decision(target, 0);
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)&&sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
         {
-            // left key is pressed: move our character
             sf::Vector2f target=pod.pos_-1000.f*sf::Vector2f(0,1);
             return Decision(target, 0);
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)&&sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
         {
-            // left key is pressed: move our character
             sf::Vector2f target=pod.pos_+1000.f*sf::Vector2f(-1,1);
             return Decision(target, power);
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)&&sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
         {
-            // left key is pressed: move our character
             sf::Vector2f target=pod.pos_+1000.f*sf::Vector2f(-1,-1);
             return Decision(target, power);
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)&&sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
         {
-            // left key is pressed: move our character
             sf::Vector2f target=pod.pos_+1000.f*sf::Vector2f(1,1);
             return Decision(target, power);
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)&&sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
         {
-            // left key is pressed: move our character
             sf::Vector2f target=pod.pos_+1000.f*sf::Vector2f(1,-1);
             return Decision(target, power);
         }
@@ -259,43 +253,25 @@ Decision Pod::getDecision(Pod &pod, std::vector<CheckPoint> otherCPs_, FinalChec
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
         {
-            // left key is pressed: move our character
             sf::Vector2f target=pod.pos_-1000.f*sf::Vector2f(0,1);
             return Decision(target, power);
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
         {
-            // left key is pressed: move our character
-                
-        
-        
             sf::Vector2f target= pod.pos_+1000.f*sf::Vector2f(1,0);
             return Decision(target, power);
-            
-                
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
         {
-            // left key is pressed: move our character
-                
-            
             sf::Vector2f target= pod.pos_+1000.f*sf::Vector2f(0,1);
-            return Decision(target, power);
-                
+            return Decision(target, power);    
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
         {
-            // left key is pressed: move our character
-                
-            
-            
-            
             sf::Vector2f target= pod.pos_-1000.f*sf::Vector2f(1,0);
             return Decision(target, power);
-            
-
-
         }
+        //action par defaut
         return Decision(pod.pos_+1000.f*pod.vel_/norme(pod.vel_),0);
     }
 

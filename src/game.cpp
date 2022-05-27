@@ -233,7 +233,9 @@ void Game::updatePhysics()
                 }
             }
            
-        } else {
+        } 
+        //si le decalage n'est pas superieur a pi/10
+        else {
           
             float norm = norme(vecteur_vers_target);
             
@@ -260,6 +262,7 @@ void Game::updatePhysics()
             }
             
         }
+        //coloration checkpoint
         if (pods_[i].IA_==false) { 
             float dist;
             if (pods_[i].nextCP_>=0) {
@@ -392,6 +395,7 @@ void Game::updateGraphics(sf::Time frameTime)
    
     if (frameTime==physicsTime) 
     {
+        //pour se recaler toujours sur la physique
         int nbPod=pods_.size();
         for(int i=0;i<nbPod;i++)
         {
@@ -402,12 +406,11 @@ void Game::updateGraphics(sf::Time frameTime)
 
     else
     {
+        // calcul des positions intermediaires des spriteq
         int nbPod=pods_.size();
         for(int i=0;i<nbPod;i++)
-        {
-            
+        {  
             podsSprites_[i].move(((physicsTime-frameTime)/PHYSICS_TIME_STEP)*(pods_[i].pos_-podsSprites_[i].getPosition())); //bouge sprite avec fraction temporelle
-
         }
     }
 }    
